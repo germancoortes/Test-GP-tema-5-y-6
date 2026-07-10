@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Baloo 2", "Nunito Sans", sans-serif;
+  --font-sans: "Nunito Sans", "Inter", sans-serif;
+
+  --color-teal-50: #eaf6f6;
+  --color-teal-100: #d3ecea;
+  --color-teal-200: #a9dbd8;
+  --color-teal-500: #0b7a75;
+  --color-teal-600: #096560;
+  --color-teal-700: #075350;
+
+  --color-sun-300: #ffd08a;
+  --color-sun-400: #ffb84d;
+  --color-sun-500: #ff9f1c;
+  --color-sun-600: #e08600;
+
+  --color-navy-900: #073b4c;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-navy-900);
+  background-color: var(--color-teal-50);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-sun-500);
+  outline-offset: 2px;
+}
+
+.print-a5 {
+  width: 100%;
+  max-width: 148mm;
+  aspect-ratio: 148 / 210;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  .print-a5 {
+    width: 148mm;
+    height: 210mm;
+    max-width: none;
+    aspect-ratio: auto;
+  }
+}
