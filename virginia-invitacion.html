@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Virginia, ¿te apuntas a un plan?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --coral:#ff8a65;
+    --coral-deep:#ff6f47;
+    --rose:#f2a6b0;
+    --rose-soft:#f7c8ce;
+    --gold:#f0b25e;
+    --navy:#1c2540;
+    --navy-deep:#121729;
+    --cream:#fff6ee;
+    --ink:#2c2440;
+  }
+
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    overflow-x:hidden;
+    font-family:'Jost', sans-serif;
+    color:var(--cream);
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 0%, rgba(255,180,140,0.35), transparent 60%),
+      linear-gradient(180deg, #2b2350 0%, #5a3a63 22%, #a24a63 42%, #e2694f 62%, #f0a24f 80%, #f6c56b 100%);
+    background-attachment:fixed;
+    position:relative;
+  }
+
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(circle at 15% 25%, rgba(255,255,255,0.06) 0%, transparent 6%),
+      radial-gradient(circle at 80% 15%, rgba(255,255,255,0.05) 0%, transparent 4%),
+      radial-gradient(circle at 65% 60%, rgba(255,255,255,0.04) 0%, transparent 5%),
+      radial-gradient(circle at 30% 80%, rgba(255,255,255,0.05) 0%, transparent 4%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .sun{
+    position:fixed;
+    left:50%;
+    top:-90px;
+    transform:translateX(-50%);
+    width:340px;
+    height:340px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(255,225,170,0.9) 0%, rgba(255,180,120,0.35) 45%, transparent 70%);
+    filter:blur(2px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .wrap{
+    position:relative;
+    z-index:1;
+    max-width:640px;
+    margin:0 auto;
+    padding:0 22px 90px;
+  }
+
+  header.hero{
+    text-align:center;
+    padding:74px 0 40px;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:0.78rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.25);
+    padding:7px 16px;
+    border-radius:999px;
+    margin-bottom:22px;
+    backdrop-filter:blur(6px);
+  }
+
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:clamp(2rem, 8vw, 3.1rem);
+    line-height:1.15;
+    margin:0 0 18px;
+    text-shadow:0 4px 24px rgba(0,0,0,0.25);
+  }
+
+  h1 em{
+    font-style:italic;
+    color:var(--gold);
+  }
+
+  .subtitle{
+    font-size:1.05rem;
+    line-height:1.6;
+    color:#fff0e4;
+    max-width:460px;
+    margin:0 auto;
+    opacity:0.92;
+  }
+
+  .date-pill{
+    margin:30px auto 0;
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:1.15rem;
+    background:rgba(28,37,64,0.35);
+    border:1px solid rgba(255,255,255,0.3);
+    padding:12px 24px;
+    border-radius:999px;
+    backdrop-filter:blur(8px);
+  }
+
+  section.timeline-section{
+    margin-top:30px;
+  }
+
+  .section-title{
+    font-family:'Playfair Display', serif;
+    font-size:1.5rem;
+    text-align:center;
+    margin:0 0 44px;
+    color:var(--cream);
+    position:relative;
+  }
+  .section-title::after{
+    content:"";
+    display:block;
+    width:60px;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin:14px auto 0;
+  }
+
+  .timeline{
+    position:relative;
+    padding-left:38px;
+  }
+
+  .timeline::before{
+    content:"";
+    position:absolute;
+    left:10px;
+    top:6px;
+    bottom:6px;
+    width:2px;
+    background:linear-gradient(180deg, var(--gold), var(--coral), var(--rose), rgba(255,255,255,0.15));
+    opacity:0.6;
+  }
+
+  .item{
+    position:relative;
+    margin-bottom:30px;
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .item.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .item .dot{
+    position:absolute;
+    left:-38px;
+    top:2px;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    background:linear-gradient(135deg, var(--coral-deep), var(--gold));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:0.95rem;
+    box-shadow:0 0 0 4px rgba(255,255,255,0.12), 0 4px 14px rgba(0,0,0,0.3);
+  }
+
+  .card{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.16);
+    border-radius:16px;
+    padding:16px 18px;
+    backdrop-filter:blur(10px);
+    transition:transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .card:hover{
+    transform:translateX(4px);
+    background:rgba(255,255,255,0.13);
+    box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  }
+
+  .time{
+    font-family:'Playfair Display', serif;
+    font-weight:600;
+    font-size:0.98rem;
+    color:var(--gold);
+    letter-spacing:0.02em;
+  }
+
+  .label{
+    margin-top:4px;
+    font-size:1rem;
+    line-height:1.45;
+    color:#fff4ea;
+  }
+
+  .note{
+    display:block;
+    margin-top:5px;
+    font-size:0.85rem;
+    color:rgba(255,244,234,0.65);
+    font-style:italic;
+  }
+
+  .cta-section{
+    margin-top:56px;
+    text-align:center;
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .cta-section.visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .cta-question{
+    font-family:'Playfair Display', serif;
+    font-size:1.5rem;
+    margin-bottom:8px;
+  }
+
+  .cta-hint{
+    font-size:0.92rem;
+    color:rgba(255,244,234,0.75);
+    margin-bottom:30px;
+  }
+
+  .btn{
+    font-family:'Jost', sans-serif;
+    border:none;
+    cursor:pointer;
+    border-radius:999px;
+    font-size:1.05rem;
+    padding:17px 38px;
+    display:inline-block;
+    transition:transform 0.15s ease, box-shadow 0.25s ease, background 0.3s ease;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+
+  .btn-primary{
+    background:linear-gradient(135deg, #ffcf7a, var(--coral-deep) 60%, #ff5b6a);
+    color:#2a1810;
+    font-weight:600;
+    box-shadow:0 10px 30px rgba(255, 110, 80, 0.4);
+    letter-spacing:0.01em;
+  }
+  .btn-primary:hover{
+    transform:translateY(-3px) scale(1.02);
+    box-shadow:0 14px 36px rgba(255, 110, 80, 0.55);
+  }
+  .btn-primary:active{
+    transform:translateY(0) scale(0.98);
+  }
+
+  .btn-secondary{
+    display:block;
+    margin:18px auto 0;
+    background:transparent;
+    color:rgba(255,244,234,0.85);
+    border:1px solid rgba(255,255,255,0.35) !important;
+    font-weight:400;
+    padding:13px 30px;
+    font-size:0.95rem;
+  }
+  .btn-secondary:hover{
+    background:rgba(255,255,255,0.1);
+    transform:translateY(-2px);
+  }
+  .btn-secondary:active{
+    transform:translateY(0);
+  }
+
+  .playful-reply{
+    margin-top:16px;
+    font-size:0.92rem;
+    color:var(--gold);
+    font-style:italic;
+    min-height:1.4em;
+    opacity:0;
+    transition:opacity 0.4s ease;
+  }
+  .playful-reply.show{opacity:1;}
+
+  footer{
+    text-align:center;
+    margin-top:60px;
+    font-size:0.8rem;
+    color:rgba(255,244,234,0.45);
+    letter-spacing:0.04em;
+  }
+
+  /* Confirmation overlay */
+  .overlay{
+    position:fixed;
+    inset:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background:radial-gradient(ellipse at 50% 30%, rgba(90,58,99,0.92), rgba(18,23,41,0.97));
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.5s ease;
+  }
+  .overlay.show{
+    opacity:1;
+    pointer-events:auto;
+  }
+
+  .overlay-card{
+    text-align:center;
+    max-width:420px;
+    transform:scale(0.85);
+    transition:transform 0.5s cubic-bezier(.2,1.4,.4,1);
+  }
+  .overlay.show .overlay-card{
+    transform:scale(1);
+  }
+
+  .overlay-card .big-emoji{
+    font-size:3.4rem;
+    display:block;
+    margin-bottom:18px;
+  }
+
+  .overlay-card h2{
+    font-family:'Playfair Display', serif;
+    font-size:2rem;
+    margin:0 0 14px;
+    color:#fff5ea;
+  }
+
+  .overlay-card p{
+    font-size:1.02rem;
+    line-height:1.6;
+    color:rgba(255,244,234,0.85);
+    margin:0 0 26px;
+  }
+
+  .overlay-close{
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.3);
+    color:#fff5ea;
+    padding:11px 26px;
+    border-radius:999px;
+    font-family:'Jost', sans-serif;
+    cursor:pointer;
+    font-size:0.9rem;
+    transition:background 0.25s ease;
+  }
+  .overlay-close:hover{
+    background:rgba(255,255,255,0.22);
+  }
+
+  /* Floating hearts + confetti */
+  .fx-layer{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:60;
+    overflow:hidden;
+  }
+
+  .heart{
+    position:absolute;
+    bottom:-10%;
+    font-size:1.4rem;
+    animation:floatUp linear forwards;
+    filter:drop-shadow(0 2px 6px rgba(0,0,0,0.25));
+  }
+
+  @keyframes floatUp{
+    0%{transform:translateY(0) translateX(0) rotate(0deg); opacity:1;}
+    85%{opacity:1;}
+    100%{transform:translateY(-115vh) translateX(var(--drift, 30px)) rotate(360deg); opacity:0;}
+  }
+
+  .confetto{
+    position:absolute;
+    top:-5%;
+    width:9px;
+    height:14px;
+    opacity:0.95;
+    animation:confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall{
+    0%{transform:translateY(0) rotate(0deg); opacity:1;}
+    100%{transform:translateY(110vh) rotate(600deg); opacity:0.4;}
+  }
+
+  @media (max-width:420px){
+    .timeline{padding-left:32px;}
+    .item .dot{left:-32px; width:26px; height:26px; font-size:0.85rem;}
+    header.hero{padding-top:56px;}
+    .btn{width:100%;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="sun" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Un plan sin escapatoria</span>
+    <h1>Virginia, <em>¿te apuntas</em><br>a un plan?</h1>
+    <p class="subtitle">He estado maquinando y creo que tengo el día perfecto. Spa, tapas de atún (ya sé, ya sé) y un atardecer en Tarifa que promete. Solo falta tu «sí».</p>
+    <div class="date-pill">📅 Sábado, 15 de agosto de 2026</div>
+  </header>
+
+  <section class="timeline-section">
+    <h2 class="section-title">El plan, minuto a minuto</h2>
+
+    <div class="timeline" id="timeline">
+
+      <div class="item">
+        <div class="dot">🚗</div>
+        <div class="card">
+          <div class="time">10:15</div>
+          <div class="label">Salida desde San Fernando<span class="note">Yo conduzco, tú eliges la música (con veto a las de siempre).</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">🏨</div>
+        <div class="card">
+          <div class="time">11:35</div>
+          <div class="label">Llegada al Hotel Tarifa Lances<span class="note">Dejamos las bolsas y respiramos aire de Tarifa.</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">💆</div>
+        <div class="card">
+          <div class="time">12:00 – 13:00</div>
+          <div class="label">Spa en pareja<span class="note">Una hora de silencio obligatorio. Bueno, casi.</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">💃</div>
+        <div class="card">
+          <div class="time">13:30 – 14:30</div>
+          <div class="label">Nos arreglamos y paseo al centro<span class="note">Tú tardarás más, ya lo sé, ya cuento con ello.</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">🍽️</div>
+        <div class="card">
+          <div class="time">14:30</div>
+          <div class="label">Comida en El Lola<span class="note">Tapas de atún obligatorias. No se aceptan objeciones.</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">☕</div>
+        <div class="card">
+          <div class="time">16:15 – 17:30</div>
+          <div class="label">Café y paseo por el casco antiguo<span class="note">Calles blancas, alguna tienda "solo para mirar".</span></div>
+        </div>
+      </div>
+
+      <div class="item">
+        <div class="dot">🌅</div>
+        <div class="card">
+          <div class="time">20:15</div>
+          <div class="label">Cóctel viendo el atardecer en Tumbao<span class="note">El broche de oro. Literal, por el color del cielo.</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="cta-section" id="ctaSection">
+    <p class="cta-question">Entonces… ¿qué me dices?</p>
+    <p class="cta-hint">Solo hay un botón correcto, pero te dejo el otro por si acaso.</p>
+    <button class="btn btn-primary" id="acceptBtn">Sí, acepto 💛</button>
+    <button class="btn btn-secondary" id="thinkBtn">Aún lo estoy pensando</button>
+    <p class="playful-reply" id="playfulReply"></p>
+  </section>
+
+  <footer>hecho con cariño (y un poco de manipulación cariñosa) para el 15 de agosto</footer>
+
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <span class="big-emoji">🥂</span>
+    <h2>¡Nos vemos el sábado!</h2>
+    <p>Reserva hecha, playlist en camino y tapas de atún ya reservadas mentalmente. Solo falta que llegue el 15 de agosto.</p>
+    <button class="overlay-close" id="closeOverlay">Cerrar</button>
+  </div>
+</div>
+
+<div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var items = document.querySelectorAll(".item");
+  var cta = document.getElementById("ctaSection");
+
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add("visible");
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2, rootMargin: "0px 0px -40px 0px" });
+
+  items.forEach(function(el, i){
+    el.style.transitionDelay = (i * 70) + "ms";
+    observer.observe(el);
+  });
+  observer.observe(cta);
+
+  var thinkReplies = [
+    "Tómate tu tiempo… tienes hasta las 10:14 del sábado.",
+    "El atún de El Lola no espera eternamente, ¿eh?",
+    "Vale, pero el spa ya casi está reservado a tu nombre.",
+    "Sigo aquí. Sigo esperando. Con paciencia infinita (relativa)."
+  ];
+  var replyIndex = 0;
+  var thinkBtn = document.getElementById("thinkBtn");
+  var replyEl = document.getElementById("playfulReply");
+
+  thinkBtn.addEventListener("click", function(){
+    replyEl.textContent = thinkReplies[replyIndex % thinkReplies.length];
+    replyEl.classList.remove("show");
+    void replyEl.offsetWidth;
+    replyEl.classList.add("show");
+    replyIndex++;
+  });
+
+  var fxLayer = document.getElementById("fxLayer");
+  var confettiColors = ["#ff8a65", "#f0b25e", "#f2a6b0", "#ffe0a3", "#e2694f"];
+
+  function launchCelebration(){
+    for(var i=0;i<26;i++){
+      createConfetto(i);
+    }
+    for(var j=0;j<14;j++){
+      createHeart(j);
+    }
+  }
+
+  function createConfetto(i){
+    var el = document.createElement("div");
+    el.className = "confetto";
+    el.style.left = (Math.random()*100) + "vw";
+    el.style.background = confettiColors[i % confettiColors.length];
+    el.style.animationDuration = (2.4 + Math.random()*1.6) + "s";
+    el.style.animationDelay = (Math.random()*0.5) + "s";
+    el.style.borderRadius = (Math.random() > 0.5 ? "50%" : "2px");
+    fxLayer.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 4600);
+  }
+
+  function createHeart(j){
+    var emojis = ["💛","🧡","💫","✨"];
+    var el = document.createElement("div");
+    el.className = "heart";
+    el.textContent = emojis[j % emojis.length];
+    el.style.left = (5 + Math.random()*90) + "vw";
+    el.style.setProperty("--drift", (Math.random()*60 - 30) + "px");
+    el.style.animationDuration = (3 + Math.random()*2) + "s";
+    el.style.animationDelay = (Math.random()*0.8) + "s";
+    el.style.fontSize = (1 + Math.random()*0.9) + "rem";
+    fxLayer.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 6000);
+  }
+
+  var overlay = document.getElementById("overlay");
+  var acceptBtn = document.getElementById("acceptBtn");
+  var closeOverlay = document.getElementById("closeOverlay");
+
+  acceptBtn.addEventListener("click", function(){
+    launchCelebration();
+    overlay.classList.add("show");
+  });
+
+  closeOverlay.addEventListener("click", function(){
+    overlay.classList.remove("show");
+  });
+
+  overlay.addEventListener("click", function(e){
+    if(e.target === overlay){
+      overlay.classList.remove("show");
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
