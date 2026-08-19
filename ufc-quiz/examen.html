@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen Final UFC · Mix de Preguntas</title>
+<style>
+  :root{
+    --bg:#0b0c10; --bg2:#14161c; --card:#1a1d25; --border:#2a2e3a;
+    --red:#d20a0a; --red2:#ff2b2b; --gold:#e8b923; --text:#f2f3f5;
+    --muted:#9aa0ad; --green:#2ecc71; --wrong:#ff4d4d;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:radial-gradient(circle at top, #1c1f27 0%, var(--bg) 70%);
+    color:var(--text); min-height:100vh; padding:24px 14px 60px;
+  }
+  .wrap{max-width:820px; margin:0 auto;}
+  header{text-align:center; margin-bottom:24px;}
+  header h1{font-size:2rem; margin:0; letter-spacing:1px; text-transform:uppercase;}
+  header h1 span{color:var(--red2);}
+  header p{color:var(--muted); margin-top:6px;}
+  .badge{
+    display:inline-block; background:var(--gold); color:#1a1500;
+    font-weight:700; font-size:.75rem; padding:3px 10px; border-radius:20px;
+    margin-top:10px; letter-spacing:.5px;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:22px; margin-bottom:18px; box-shadow:0 8px 24px rgba(0,0,0,.35);
+  }
+  .btn{
+    background:linear-gradient(135deg, var(--red2), var(--red));
+    color:#fff; border:none; padding:14px 20px; border-radius:12px;
+    font-weight:700; font-size:1rem; cursor:pointer; width:100%;
+    text-transform:uppercase; letter-spacing:.5px; margin-top:6px;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(210,10,10,.4);}
+  .btn.secondary{background:var(--bg2); border:1px solid var(--border); color:var(--text);}
+  .btn:disabled{opacity:.5; cursor:not-allowed; transform:none;}
+  #exam-area{display:none;}
+  .progress-row{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--muted); font-size:.85rem;}
+  .progress-bar{height:8px; background:var(--bg2); border-radius:6px; overflow:hidden; margin-bottom:18px; border:1px solid var(--border);}
+  .progress-fill{height:100%; background:linear-gradient(90deg, var(--gold), var(--red2)); width:0%; transition:width .3s ease;}
+  .question{font-size:1.15rem; font-weight:600; margin-bottom:18px; line-height:1.4;}
+  .options{display:grid; gap:10px;}
+  .option{
+    text-align:left; padding:14px 16px; border-radius:10px; border:1px solid var(--border);
+    background:var(--bg2); color:var(--text); cursor:pointer; font-size:.98rem;
+    transition:background .15s ease, border-color .15s ease;
+  }
+  .option:hover{border-color:var(--gold);}
+  .option.selected{border-color:var(--gold); background:rgba(232,185,35,.12);}
+  .nav-row{display:flex; gap:10px; margin-top:18px;}
+  #result-area{display:none; text-align:center;}
+  #result-area .score{font-size:3rem; font-weight:800; color:var(--gold); margin:10px 0;}
+  #result-area .grade{font-size:1.4rem; font-weight:700; margin-bottom:6px;}
+  #result-area .msg{font-size:1.05rem; margin-bottom:20px; color:var(--muted);}
+  .review-item{
+    text-align:left; padding:12px 14px; border-radius:10px; margin-bottom:10px;
+    border:1px solid var(--border); background:var(--bg2);
+  }
+  .review-item.ok{border-left:4px solid var(--green);}
+  .review-item.bad{border-left:4px solid var(--wrong);}
+  .review-item .your-answer{color:var(--wrong); font-size:.85rem;}
+  .review-item .correct-answer{color:var(--green); font-size:.85rem;}
+  footer{text-align:center; color:var(--muted); font-size:.8rem; margin-top:30px;}
+  a.backlink{color:var(--gold); text-decoration:none; font-size:.85rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Examen Final <span>UFC</span></h1>
+    <p>Mix de preguntas de todos los niveles y módulos, sin pistas de categoría</p>
+    <span class="badge" id="bank-count"></span>
+  </header>
+
+  <div class="card" id="intro-card">
+    <p style="color:var(--muted); line-height:1.5;">
+      Este examen combina preguntas de historia, reglamento, técnicas, campeones y cultura UFC,
+      mezcladas al azar como en un examen real. No verás el nivel ni el módulo de cada pregunta.
+      Debes responder todas antes de ver tu nota final.
+    </p>
+    <button class="btn" id="start-btn">Comenzar examen</button>
+  </div>
+
+  <div id="exam-area">
+    <div class="progress-row">
+      <span id="progress-text">Pregunta 1</span>
+      <span id="score-live">Respondidas: 0</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="card">
+      <div class="question" id="question-text"></div>
+      <div class="options" id="options-list"></div>
+      <div class="nav-row">
+        <button class="btn secondary" id="prev-btn">Anterior</button>
+        <button class="btn" id="next-btn">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="result-area">
+    <div>Nota final del examen</div>
+    <div class="score" id="final-score">0/0</div>
+    <div class="grade" id="final-grade"></div>
+    <div class="msg" id="final-msg"></div>
+    <button class="btn" id="restart-btn">Repetir examen</button>
+    <div id="review-list" style="margin-top:20px; text-align:left;"></div>
+  </div>
+
+  <footer><a class="backlink" href="niveles.html">&larr; Ir al quiz por módulos y niveles</a></footer>
+</div>
+
+<script>
+const QUESTIONS = [
+  {q:"¿En qué año se fundó la UFC?", options:["1988","1993","1998","2001"], answer:1, explain:"La UFC se fundó en 1993."},
+  {q:"¿Cuántos lados tiene el octágono?", options:["6","8","10","12"], answer:1, explain:"El octágono tiene, como su nombre indica, 8 lados."},
+  {q:"¿Cuál es el nombre real de la técnica de estrangulación aplicada desde la espalda?", options:["Guillotina","Rear-naked choke","Kimura","Triángulo"], answer:1, explain:"Es el rear-naked choke, aplicado controlando la espalda del rival."},
+  {q:"¿Quién se retiró invicto con récord de 29-0?", options:["Conor McGregor","Khabib Nurmagomedov","Jon Jones","Georges St-Pierre"], answer:1, explain:"Khabib Nurmagomedov se retiró en 2020 sin derrotas."},
+  {q:"¿Cuántos asaltos tiene un combate por el título?", options:["3","4","5","7"], answer:2, explain:"Los combates de título se disputan a 5 asaltos de 5 minutos."},
+  {q:"¿Qué golpe está prohibido por el reglamento?", options:["Rodillazo al cuerpo","Golpe en la nuca","Codazo","Patada baja"], answer:1, explain:"Golpear la parte trasera de la cabeza/nuca es ilegal."},
+  {q:"¿Quién fue la primera campeona en la historia de la UFC femenina?", options:["Amanda Nunes","Ronda Rousey","Holly Holm","Cris Cyborg"], answer:1, explain:"Ronda Rousey fue la primera campeona de peso gallo femenino."},
+  {q:"¿Qué disciplina popularizó Royce Gracie en los primeros torneos UFC?", options:["Boxeo","Muay Thai","Jiu-Jitsu Brasileño","Sambo"], answer:2, explain:"Royce Gracie demostró la superioridad del BJJ en combates sin reglas de peso."},
+  {q:"¿Cuánto dura un asalto en la UFC?", options:["3 minutos","4 minutos","5 minutos","10 minutos"], answer:2, explain:"Cada asalto dura 5 minutos."},
+  {q:"¿Qué peleador es apodado 'The Notorious'?", options:["Nate Diaz","Conor McGregor","Justin Gaethje","Dustin Poirier"], answer:1, explain:"Conor McGregor es 'The Notorious'."},
+  {q:"¿Qué tipo de guantes se usan en la UFC?", options:["Guantes cerrados como en boxeo","Guantes de dedos abiertos acolchados","Manos vendadas sin guantes","Guantes de MMA rígidos de cuero duro"], answer:1, explain:"Se usan guantes de dedos abiertos, alrededor de 4-6 onzas."},
+  {q:"¿Quién es el presidente histórico de la UFC desde 2001?", options:["Dana White","Lorenzo Fertitta","Ari Emanuel","Bruce Buffer"], answer:0, explain:"Dana White dirige la UFC desde el año 2001."},
+  {q:"¿Cómo se llama la llave que hiperextiende el codo del rival?", options:["Kimura","Armbar","Guillotina","Heel hook"], answer:1, explain:"El armbar ataca directamente la articulación del codo."},
+  {q:"¿En qué categoría de peso compitió Anderson Silva en su reinado más largo?", options:["Peso wélter","Peso medio","Peso ligero","Peso pesado"], answer:1, explain:"Anderson Silva dominó el peso medio (middleweight) casi 7 años."},
+  {q:"¿Qué división NO existe en la UFC masculina?", options:["Peso mosca","Peso pluma","Peso super pesado","Peso pesado"], answer:2, explain:"No existe la categoría 'peso super pesado'; la más alta es peso pesado (heavyweight)."},
+  {q:"¿Qué peleador ostenta el récord de más defensas consecutivas del título de peso mosca?", options:["Deiveson Figueiredo","Demetrious Johnson","Brandon Moreno","Alexandre Pantoja"], answer:1, explain:"Demetrious 'Mighty Mouse' Johnson defendió el título 11 veces seguidas."},
+  {q:"¿Qué significa TKO?", options:["Total Knockout","Technical Knockout (nocaut técnico)","Time Knockout","Tactical Knockout"], answer:1, explain:"TKO es nocaut técnico, decretado por el árbitro o el equipo médico."},
+  {q:"¿Cómo se llama el agarre cuerpo a cuerpo de pie, usado mucho en Muay Thai?", options:["Clinch","Sprawl","Guard","Mount"], answer:0, explain:"El clinch permite lanzar rodillazos y codazos a corta distancia."},
+  {q:"¿Qué peleadora es conocida por mantener dos títulos simultáneos (gallo y pluma)?", options:["Valentina Shevchenko","Amanda Nunes","Zhang Weili","Julianna Peña"], answer:1, explain:"Amanda Nunes, 'The Lioness', logró la hazaña de dos cinturones a la vez."},
+  {q:"¿Quién fue el primer campeón simultáneo de dos divisiones masculinas en la UFC?", options:["BJ Penn","Conor McGregor","Georges St-Pierre","Daniel Cormier"], answer:1, explain:"Conor McGregor logró tener el título pluma y ligero a la vez en 2016."},
+  {q:"¿Qué es el 'ground and pound'?", options:["Golpear al rival en el suelo desde posición dominante","Una llave de sumisión","Una técnica de derribo específica","Un tipo de patada giratoria"], answer:0, explain:"Es golpear al oponente controlándolo en el suelo."},
+  {q:"¿Cuántos jueces puntúan cada combate desde el borde de la jaula?", options:["1","2","3","4"], answer:2, explain:"Tres jueces cageside puntúan de forma independiente cada asalto."},
+  {q:"¿Qué sistema de puntuación se utiliza en la UFC?", options:["Sistema de 10 puntos obligatorios","Puntos acumulativos ilimitados","Solo K.O. o sumisión cuenta","Votación del público"], answer:0, explain:"Se usa el '10-point must system', igual que en boxeo profesional."},
+  {q:"¿Qué peleador es reconocido por el récord de golpes significativos conectados en la historia de la UFC?", options:["Max Holloway","Jim Miller","Donald Cerrone","Nate Diaz"], answer:0, explain:"Max Holloway lidera la estadística histórica de golpes significativos."},
+  {q:"¿Qué peleador dejó el récord del golpe más potente medido por el UFC Performance Institute?", options:["Derrick Lewis","Francis Ngannou","Ciryl Gane","Tom Aspinall"], answer:1, explain:"Francis Ngannou marcó el registro más alto de fuerza de golpeo medido."},
+  {q:"¿Qué evento de la UFC generó el enfrentamiento histórico entre Khabib Nurmagomedov y Conor McGregor?", options:["UFC 205","UFC 229","UFC 246","UFC 264"], answer:1, explain:"UFC 229, en 2018, batió récords de pago por visión con ese combate."},
+  {q:"¿Cómo se llama la sumisión de pierna que rota el talón?", options:["Kneebar","Heel hook","Calf slicer","Toe hold"], answer:1, explain:"El heel hook genera torsión peligrosa en tobillo y rodilla."},
+  {q:"¿Qué reality show ayudó a popularizar la UFC en EE.UU. a partir de 2005?", options:["Dana White's Contender Series","The Ultimate Fighter (TUF)","UFC Embedded","UFC Unleashed"], answer:1, explain:"The Ultimate Fighter fue clave para el crecimiento de la marca UFC."},
+  {q:"¿Qué empresa adquirió la UFC en 2016?", options:["WWE","Endeavor (WME-IMG)","Live Nation","ESPN"], answer:1, explain:"WME-IMG, hoy Endeavor, compró la UFC por unos 4.000 millones de dólares."},
+  {q:"¿Cómo se llamaba la compañía que gestionó la UFC entre 2001 y 2016?", options:["Zuffa LLC","Octagon Inc.","Fight Promotions Group","White Enterprises"], answer:0, explain:"Zuffa LLC fue fundada por los Fertitta y Dana White."},
+  {q:"¿Qué marca de ropa deportiva sustituyó a Reebok como proveedor oficial de la UFC en 2021?", options:["Nike","Venum","Under Armour","Hayabusa"], answer:1, explain:"Venum tomó el relevo de Reebok como marca oficial en 2021."},
+  {q:"¿Quién es el locutor histórico que presenta a los peleadores con la frase 'It's time!'?", options:["Joe Rogan","Bruce Buffer","Jon Anik","Daniel Cormier"], answer:1, explain:"Bruce Buffer es el anunciador clásico del octágono."},
+  {q:"¿Qué peleador ostenta el récord de mayor número de nocauts en la historia de la UFC en peso pesado?", options:["Derrick Lewis","Francis Ngannou","Cain Velasquez","Junior dos Santos"], answer:0, explain:"Derrick Lewis posee el récord de más finalizaciones por nocaut en peso pesado."},
+  {q:"¿Qué acción está permitida en el reglamento actual de la UFC?", options:["Golpes en la ingle","Tirones de pelo","Derribos con doble pierna","Golpes a la nuca"], answer:2, explain:"Los derribos (takedowns) son una parte legal y fundamental del MMA."},
+  {q:"¿Qué liga/organización rival compitió fuertemente con la UFC en los 2000, siendo japonesa?", options:["Bellator","PRIDE FC","ONE Championship","Strikeforce"], answer:1, explain:"PRIDE FC fue la gran organización rival japonesa hasta su compra por Zuffa en 2007."},
+  {q:"¿Qué compañía compró Zuffa (dueña de la UFC) en 2007, expandiendo su catálogo de peleadores?", options:["PRIDE FC","Bellator","WEC","Strikeforce"], answer:0, explain:"Zuffa adquirió PRIDE FC en 2007, incorporando a muchas estrellas japonesas."},
+  {q:"¿Qué organización de peso pluma y gallo fue absorbida por la UFC en 2011, aportando divisiones ligeras?", options:["WEC (World Extreme Cagefighting)","Strikeforce","Invicta FC","Bellator"], answer:0, explain:"WEC se fusionó con la UFC en 2011, trayendo las divisiones de peso pluma, gallo y mosca."},
+  {q:"¿Qué significa la sigla BJJ, disciplina clave en el grappling de MMA?", options:["Brazilian Jiu-Jitsu","British Judo Jitsu","Basic Joint Jam","Battle Jiu-Jitsu"], answer:0, explain:"BJJ es Brazilian Jiu-Jitsu (Jiu-Jitsu Brasileño)."},
+  {q:"¿Cuál es la categoría de peso más baja en la UFC femenina?", options:["Peso mosca","Peso paja (strawweight)","Peso gallo","Peso pluma"], answer:1, explain:"El peso paja (115 lbs) es la división más ligera femenina."},
+  {q:"¿Qué límite de peso corresponde aproximadamente a la categoría de peso ligero (lightweight)?", options:["135 libras","145 libras","155 libras","170 libras"], answer:2, explain:"El peso ligero tiene un límite de 155 libras (70,3 kg)."},
+  {q:"¿Qué evento especial de la UFC celebró un hito redondo en su numeración en 2024?", options:["UFC 250","UFC 280","UFC 300","UFC 310"], answer:2, explain:"UFC 300 se celebró en abril de 2024 como un evento histórico y muy mediático."},
+];
+
+document.getElementById('bank-count').textContent = `${QUESTIONS.length} preguntas mezcladas`;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+let pool = [];
+let current = 0;
+let userAnswers = [];
+
+document.getElementById('start-btn').addEventListener('click', () => {
+  pool = shuffle(QUESTIONS);
+  userAnswers = new Array(pool.length).fill(null);
+  current = 0;
+  document.getElementById('intro-card').style.display = 'none';
+  document.getElementById('exam-area').style.display = 'block';
+  document.getElementById('result-area').style.display = 'none';
+  renderQuestion();
+});
+
+function renderQuestion(){
+  const item = pool[current];
+  document.getElementById('progress-text').textContent = `Pregunta ${current+1} de ${pool.length}`;
+  const answeredCount = userAnswers.filter(a => a !== null).length;
+  document.getElementById('score-live').textContent = `Respondidas: ${answeredCount}/${pool.length}`;
+  document.getElementById('progress-fill').style.width = `${((current)/pool.length)*100}%`;
+  document.getElementById('question-text').textContent = item.q;
+
+  const optsWrap = document.getElementById('options-list');
+  optsWrap.innerHTML = '';
+  item.options.forEach((opt, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option' + (userAnswers[current] === idx ? ' selected' : '');
+    btn.textContent = opt;
+    btn.addEventListener('click', () => {
+      userAnswers[current] = idx;
+      renderQuestion();
+    });
+    optsWrap.appendChild(btn);
+  });
+
+  document.getElementById('prev-btn').disabled = current === 0;
+  document.getElementById('next-btn').textContent = current === pool.length - 1 ? 'Finalizar examen' : 'Siguiente';
+}
+
+document.getElementById('prev-btn').addEventListener('click', () => {
+  if(current > 0){ current--; renderQuestion(); }
+});
+
+document.getElementById('next-btn').addEventListener('click', () => {
+  if(userAnswers[current] === null){
+    if(!confirm('No has respondido esta pregunta. ¿Continuar sin responder?')) return;
+  }
+  if(current < pool.length - 1){
+    current++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults(){
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('exam-area').style.display = 'none';
+  document.getElementById('result-area').style.display = 'block';
+
+  let score = 0;
+  pool.forEach((item, i) => { if(userAnswers[i] === item.answer) score++; });
+  const pct = Math.round((score/pool.length)*100);
+
+  document.getElementById('final-score').textContent = `${score}/${pool.length}`;
+
+  let grade, msg;
+  if(pct >= 90){ grade = 'Sobresaliente'; msg = 'Nivel experto: conoces la UFC a fondo.'; }
+  else if(pct >= 75){ grade = 'Notable'; msg = 'Muy buen dominio del reglamento y la historia.'; }
+  else if(pct >= 60){ grade = 'Aprobado'; msg = 'Bien, pero conviene repasar algunos módulos.'; }
+  else { grade = 'Suspenso'; msg = 'Te recomendamos repasar el quiz por módulos antes de repetir.'; }
+  document.getElementById('final-grade').textContent = `${grade} (${pct}%)`;
+  document.getElementById('final-msg').textContent = msg;
+
+  const reviewList = document.getElementById('review-list');
+  reviewList.innerHTML = '<h3 style="color:var(--muted); text-transform:uppercase; font-size:.85rem;">Repaso de respuestas</h3>';
+  pool.forEach((item, i) => {
+    const ok = userAnswers[i] === item.answer;
+    const div = document.createElement('div');
+    div.className = 'review-item ' + (ok ? 'ok' : 'bad');
+    const userAnsText = userAnswers[i] === null ? 'Sin responder' : item.options[userAnswers[i]];
+    div.innerHTML = `<strong>${i+1}. ${item.q}</strong><br>` +
+      (ok ? `<span class="correct-answer">✓ ${item.options[item.answer]}</span>` :
+        `<span class="your-answer">Tu respuesta: ${userAnsText}</span><br><span class="correct-answer">Correcta: ${item.options[item.answer]}</span>`) +
+      `<br><span style="color:var(--muted); font-size:.82rem;">${item.explain}</span>`;
+    reviewList.appendChild(div);
+  });
+}
+
+document.getElementById('restart-btn').addEventListener('click', () => {
+  document.getElementById('result-area').style.display = 'none';
+  document.getElementById('intro-card').style.display = 'block';
+});
+</script>
+</body>
+</html>

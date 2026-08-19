@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UFC Quiz · Menú</title>
+<style>
+  :root{
+    --bg:#0b0c10; --card:#1a1d25; --border:#2a2e3a;
+    --red:#d20a0a; --red2:#ff2b2b; --gold:#e8b923; --text:#f2f3f5; --muted:#9aa0ad;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:radial-gradient(circle at top, #1c1f27 0%, var(--bg) 70%);
+    color:var(--text); padding:20px;
+  }
+  .wrap{max-width:520px; width:100%; text-align:center;}
+  h1{text-transform:uppercase; letter-spacing:1px; font-size:2rem; margin-bottom:8px;}
+  h1 span{color:var(--red2);}
+  p.sub{color:var(--muted); margin-bottom:30px;}
+  .card{
+    display:block; background:var(--card); border:1px solid var(--border); border-radius:16px;
+    padding:22px; margin-bottom:18px; text-decoration:none; color:var(--text);
+    box-shadow:0 8px 24px rgba(0,0,0,.35); transition:transform .15s ease, border-color .15s ease;
+  }
+  .card:hover{transform:translateY(-3px); border-color:var(--gold);}
+  .card h2{margin:0 0 6px; font-size:1.2rem; color:var(--gold);}
+  .card p{margin:0; color:var(--muted); font-size:.92rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>UFC <span>Quiz</span></h1>
+  <p class="sub">Elige un modo para poner a prueba tus conocimientos de MMA</p>
+
+  <a class="card" href="niveles.html">
+    <h2>📚 Quiz por Módulos y Niveles</h2>
+    <p>45 preguntas organizadas en 5 módulos (Historia, Reglas, Técnicas, Campeones, Cultura) con niveles principiante, medio y avanzado.</p>
+  </a>
+
+  <a class="card" href="examen.html">
+    <h2>🥊 Examen Final (Mix)</h2>
+    <p>41 preguntas mezcladas de todos los módulos y niveles, como un examen real, con nota final y repaso de respuestas.</p>
+  </a>
+</div>
+</body>
+</html>
