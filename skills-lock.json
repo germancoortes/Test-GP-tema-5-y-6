@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "jarvis-skills": {
+      "source": "dvcrn/openclaw-skills-marketplace",
+      "sourceType": "github",
+      "skillPath": "plugins/aly-joseph--jarvis-skills/skills/jarvis-skills/SKILL.md",
+      "computedHash": "f19c3121dcd72e41708a67763c1a9ee79bb75d42eb7c927fef564cd1b09d5bdd"
+    }
+  }
+}
