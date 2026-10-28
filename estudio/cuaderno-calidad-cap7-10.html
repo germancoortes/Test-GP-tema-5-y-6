@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cuaderno Calidad 7–10</title>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface-2:#efede6; --text:#1d1d1b; --muted:#5d5b55;
+  --border:#dcd9cf; --accent:#1f5fae; --accent-soft:#e3ecf8; --ok:#1d7a46; --ok-soft:#e1f3e8;
+  --ko:#b3261e; --ko-soft:#fbe5e3; --warn:#8a5a00; --warn-soft:#fbf0d6; --prof:#6b3fa0; --prof-soft:#efe6fa;
+  --radius:10px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#151618; --surface:#1e2023; --surface-2:#26292d; --text:#e9e7e2; --muted:#a3a09a;
+    --border:#363a3f; --accent:#7fb0ef; --accent-soft:#1f2d40; --ok:#6fd39a; --ok-soft:#173226;
+    --ko:#ff8a80; --ko-soft:#3a1d1b; --warn:#f0c060; --warn-soft:#352a12; --prof:#c7a6f2; --prof-soft:#2c2240;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#151618; --surface:#1e2023; --surface-2:#26292d; --text:#e9e7e2; --muted:#a3a09a;
+  --border:#363a3f; --accent:#7fb0ef; --accent-soft:#1f2d40; --ok:#6fd39a; --ok-soft:#173226;
+  --ko:#ff8a80; --ko-soft:#3a1d1b; --warn:#f0c060; --warn-soft:#352a12; --prof:#c7a6f2; --prof-soft:#2c2240;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+a{color:var(--accent)}
+header.top{position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border)}
+.top-inner{max-width:1100px;margin:0 auto;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.top h1{font-size:1.05rem;margin:0;flex:1 1 auto}
+nav.tabs{display:flex;gap:6px;overflow-x:auto;max-width:100%;padding-bottom:2px}
+nav.tabs button{flex:0 0 auto}
+button,.btn{font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:8px;padding:6px 12px}
+button:hover{border-color:var(--accent)}
+button.on,nav.tabs button.on{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+section.view{display:none}
+section.view.on{display:block}
+h2{font-size:1.45rem;margin:.4em 0 .3em}
+h3{font-size:1.12rem;margin:1.4em 0 .4em;padding-top:.4em;border-top:1px solid var(--border)}
+h4{margin:1em 0 .3em;font-size:1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin:12px 0}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.grid .card{margin:0}
+.tag{display:inline-block;font-size:.75rem;padding:1px 8px;border-radius:99px;background:var(--surface-2);color:var(--muted);border:1px solid var(--border);vertical-align:middle}
+.tag.prof{background:var(--prof-soft);color:var(--prof);border-color:transparent}
+.trap{background:var(--warn-soft);border-left:4px solid var(--warn);border-radius:6px;padding:10px 14px;margin:12px 0}
+.trap b:first-child{color:var(--warn)}
+.key{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:6px;padding:10px 14px;margin:12px 0}
+.formula{font-family:var(--mono);background:var(--surface-2);border-radius:6px;padding:8px 12px;margin:8px 0;overflow-x:auto;white-space:nowrap}
+.tbl{overflow-x:auto;margin:10px 0}
+table{border-collapse:collapse;width:100%;font-size:.93rem;background:var(--surface)}
+th,td{border:1px solid var(--border);padding:6px 8px;text-align:left;vertical-align:top}
+th{background:var(--surface-2)}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+ul{padding-left:1.2em;margin:.4em 0}
+li{margin:.15em 0}
+.muted{color:var(--muted)}
+.small{font-size:.88rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:8px 0}
+label.chk{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+/* quiz */
+.q{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin:14px 0}
+.q .qh{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-bottom:6px}
+.q .qt{font-weight:600;margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;margin:6px 0;padding:9px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);color:var(--text)}
+.opt .l{font-weight:700;margin-right:6px}
+.opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.ko{border-color:var(--ko);background:var(--ko-soft)}
+.opt[disabled]{cursor:default}
+.exp{margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--surface-2);font-size:.93rem}
+.score{font-size:1.1rem;font-weight:700}
+.bar{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden;margin:4px 0}
+.bar i{display:block;height:100%;background:var(--accent)}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.sticky-score{position:sticky;top:64px;z-index:5;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 12px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.hidden{display:none!important}
+details{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:8px 14px;margin:10px 0}
+details summary{cursor:pointer;font-weight:600}
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}
+.flow span{background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 10px;font-size:.9rem}
+.flow em{font-style:normal;color:var(--muted)}
+@media (max-width:640px){
+  body{font-size:15px}
+  .sticky-score{position:static}
+  h2{font-size:1.25rem}
+}
+@media print{
+  header.top,.no-print{display:none}
+  section.view{display:block!important;page-break-before:always}
+  section#v-test{display:none!important}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-inner">
+    <h1>Gestión de la Calidad Industrial · Cap. 7–10</h1>
+    <button id="themeBtn" class="small" title="Cambiar tema">◐</button>
+  </div>
+  <div class="top-inner" style="padding-top:0">
+    <nav class="tabs" id="tabs">
+      <button data-v="inicio" class="on">Inicio</button>
+      <button data-v="c7">7 · Procesos y liderazgo</button>
+      <button data-v="c8a">8 · QFD</button>
+      <button data-v="c8b">8 · AMFE</button>
+      <button data-v="c9">9 · Servicios</button>
+      <button data-v="c10">10 · ODS</button>
+      <button data-v="chuleta">Chuleta</button>
+      <button data-v="test">Test</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+<!-- ============ INICIO ============ -->
+<section class="view on" id="v-inicio">
+  <h2>Cómo usar el cuaderno</h2>
+  <div class="grid">
+    <div class="card"><b>1 · Teoría</b><br>Una pestaña por bloque. Cada uno termina con <span class="tag" style="background:var(--warn-soft);color:var(--warn)">trampas</span>: los distractores que usa el profesor.</div>
+    <div class="card"><b>2 · Chuleta</b><br>Fórmulas, cifras y fechas a memorizar en una sola página. Repasar la víspera.</div>
+    <div class="card"><b>3 · Test</b><br>Banco de preguntas de 4 opciones, opciones barajadas. <span class="tag prof">Profesor</span> = preguntas literales de los cuestionarios del temario (cap. 7 y 10).</div>
+    <div class="card"><b>4 · Repaso de falladas</b><br>El progreso se guarda en este navegador. Modo «Solo falladas» para insistir en lo que falla.</div>
+  </div>
+  <h3>Hilo común de los cuatro capítulos</h3>
+  <div class="tbl"><table>
+    <tr><th>Cap.</th><th>Pregunta que responde</th><th>Herramienta clave</th><th>Cálculo tipo examen</th></tr>
+    <tr><td>7</td><td>¿Cómo se consigue lo que quiere el cliente y quién lo hace posible?</td><td>Mapa de procesos, propietario, indicadores, PDCA, despliegue de objetivos</td><td>Rendimiento a la primera (RP), % entregas en plazo</td></tr>
+    <tr><td>8 · I</td><td>¿Qué características técnicas priorizar?</td><td>QFD · casa de la calidad</td><td>Importancia técnica Σ imp × relación</td></tr>
+    <tr><td>8 · II</td><td>¿Qué puede fallar y cuánto riesgo supone?</td><td>AMFE de diseño y de proceso</td><td>NPR = G·O·D + criterio G ≥ 9</td></tr>
+    <tr><td>9</td><td>¿Cómo se mide la calidad de un servicio?</td><td>Modelo de las 5 brechas · SERVQUAL</td><td>Brecha P − E, media y ponderada</td></tr>
+    <tr><td>10</td><td>¿A quién más afecta y cómo se mide?</td><td>Agenda 2030 · 17 ODS</td><td>Intensidad energética y mejora anual</td></tr>
+  </table></div>
+  <div class="key">Patrón de las preguntas del profesor: enunciado corto, 4 opciones, una correcta. Los distractores son casi siempre: (1) confundir dos conceptos vecinos (propiedad ↔ jerarquía, proceso ↔ resultado, verificar ↔ inspeccionar), (2) el error de cálculo típico (dividir entre el denominador equivocado, dar la tasa de fallo en vez del rendimiento), (3) una cifra cambiada (8/21 ↔ 17/169 ↔ 234).</div>
+  <div id="homeStats" class="card"></div>
+</section>
+
+<!-- ============ CAP 7 ============ -->
+<section class="view" id="v-c7">
+  <h2>Cap. 7 · TQM (sesión II): enfoque a procesos y liderazgo</h2>
+  <div class="flow"><span><b>Cliente</b> ¿qué conseguir?</span><em>→</em><span><b>Procesos</b> ¿cómo se consigue?</span><em>→</em><span><b>Liderazgo</b> ¿quién lo hace posible?</span><em>· motor: PDCA</em></div>
+  <p class="small muted">Si falla el cliente: se optimiza un proceso que produce lo que nadie quiere. Si fallan los procesos: se promete lo que no se puede repetir. Si falla el liderazgo: nada se implanta.</p>
+
+  <h3>Repaso de la sesión I (aparece en reactivaciones)</h3>
+  <ul>
+    <li><b>Cliente interno</b>: todo proceso termina en un cliente; define su salida. Ej.: el cliente interno de mecanizado es montaje.</li>
+    <li>Requisitos <b>explícitos, implícitos y latentes</b>. «Conforme pero insatisfecho» = la especificación no recogía un requisito implícito o latente.</li>
+    <li><b>Kano</b>: un requisito atractivo acaba siendo obligatorio (cargador pequeño). Los obligatorios casi nunca salen en las entrevistas.</li>
+    <li>Traducir la voz del cliente a <b>un número con unidad</b> → origen de los indicadores de resultado.</li>
+  </ul>
+
+  <h3>1 · Proceso</h3>
+  <div class="key"><b>Proceso</b>: conjunto de actividades relacionadas que transforma unas entradas en unas salidas con valor para un cliente, utilizando recursos y bajo unas condiciones de control.<br>Se deriva: todo proceso tiene cliente (aunque sea interno), principio y fin definidos, y si no se mide su resultado no se puede gestionar.</div>
+  <h4>Anatomía (ej.: montaje y ensayo de cuadros BT)</h4>
+  <div class="flow"><span>Proveedores</span><em>→</em><span>Entradas</span><em>→</em><span>Proceso</span><em>→</em><span>Salidas</span><em>→</em><span>Clientes</span></div>
+  <div class="tbl"><table>
+    <tr><th>Elemento</th><th>Ejemplo</th></tr>
+    <tr><td>Objetivo</td><td>Cuadros conformes a la primera y en plazo</td></tr>
+    <tr><td>Controles</td><td>Esquemas, procedimiento, UNE-EN IEC 61439</td></tr>
+    <tr><td>Interfaces</td><td>Recibe de ingeniería y compras; entrega a expedición</td></tr>
+    <tr><td>Límites</td><td>Empieza con la orden de fabricación liberada; termina al entregar a expedición</td></tr>
+    <tr><td>Recursos</td><td>Montadores cualificados, banco de ensayo, herramientas calibradas</td></tr>
+    <tr><td>Propietario e indicador</td><td>Jefe de taller · % de cuadros que superan el ensayo a la primera</td></tr>
+  </table></div>
+
+  <h4>Enfoque funcional vs enfoque a procesos</h4>
+  <div class="tbl"><table>
+    <tr><th></th><th>Funcional</th><th>A procesos</th></tr>
+    <tr><td>Pregunta</td><td>¿Qué hace mi departamento?</td><td>¿Qué recibe el cliente al final?</td></tr>
+    <tr><td>Optimiza</td><td>Cada área: <b>óptimo local</b></td><td>El conjunto: <b>óptimo global</b></td></tr>
+    <tr><td>Problemas</td><td>Se pierden en las <b>fronteras entre departamentos</b></td><td>Tienen responsable de extremo a extremo</td></tr>
+  </table></div>
+
+  <h4>Mapa de procesos: tres tipos</h4>
+  <div class="tbl"><table>
+    <tr><th>Tipo</th><th>Para qué</th><th>Pregunta</th><th>Ejemplos</th></tr>
+    <tr><td><b>Estratégicos</b></td><td>Fijan dirección, objetivos y recursos</td><td>¿Hacia dónde vamos y cómo sabemos si llegamos?</td><td>Planificación estratégica, revisión por la dirección, gestión de la mejora, fijación de objetivos anuales</td></tr>
+    <tr><td><b>Operativos (clave)</b></td><td>Transforman requisitos del cliente en el producto</td><td>¿Qué recibe el cliente y cómo se lo damos?</td><td>Oferta y contrato, ingeniería, fabricación, ensayo y expedición, posventa; recepción de pescado, esterilización en autoclave</td></tr>
+    <tr><td><b>De apoyo</b></td><td>Dan recursos a los demás</td><td>¿Qué necesitan los demás para funcionar?</td><td>Compras, mantenimiento, metrología/calibración, personas y formación, sistemas de información</td></tr>
+  </table></div>
+  <div class="trap"><b>Trampa:</b> la clasificación depende de la organización (mantenimiento eléctrico = apoyo en una fábrica de cuadros, operativo en una empresa de mantenimiento). «De apoyo» ≠ secundario: la calibración es de apoyo pero crítica; que sea crítica <u>no</u> la vuelve operativa (no transforma el pedido en producto) ni estratégica.</div>
+
+  <h4>Propietario del proceso</h4>
+  <div class="grid">
+    <div class="card"><b>Qué hace</b><ul><li>Define el proceso y sus límites con quien lo ejecuta</li><li>Fija indicadores y hace el seguimiento</li><li>Coordina interfaces con procesos vecinos</li><li>Lidera la mejora y responde del resultado ante la dirección</li></ul></div>
+    <div class="card"><b>Qué NO es</b><ul><li>Quien hace todo el trabajo</li><li>Necesariamente el jefe jerárquico de todos</li><li>El departamento de calidad (coordina el sistema, no es dueño de cada proceso)</li></ul></div>
+  </div>
+  <p class="small">Proceso sin propietario = proceso que nadie mejora.</p>
+
+  <h3>2 · Indicadores</h3>
+  <div class="grid">
+    <div class="card"><b>De proceso · ¿se va a llegar?</b><br>Mide el proceso mientras ocurre, <b>anticipa</b>, permite actuar a tiempo.<br><span class="small muted">% cuadros OK a la primera (RP), horas de reproceso por cuadro, tiempo de ciclo.</span></div>
+    <div class="card"><b>De resultado · ¿se ha llegado?</b><br>Mide lo que recibe el cliente; <b>confirma</b>, pero llega tarde para corregir.<br><span class="small muted">% pedidos en plazo, reclamaciones/100 cuadros, satisfacción del cliente.</span></div>
+  </div>
+  <p><b>Ficha mínima:</b> fórmula · unidad · fuente del dato · frecuencia · meta · responsable. «Un indicador sin meta es un dato; sin responsable, un dato que nadie mira.»</p>
+  <div class="formula">RP = (ensayados − no superan a la primera) / ensayados × 100 [%]</div>
+  <details><summary>Cálculo guiado del taller (con solución)</summary>
+    <p>180 cuadros ensayados, 18 no superan, 54 h de reproceso, 60 pedidos, 51 en plazo. Metas: RP ≥ 95 %, plazo ≥ 90 %.</p>
+    <ul>
+      <li>RP = 162/180 = <b>90,0 %</b> → 5 puntos bajo la meta. Con la meta, máx. 9 reprocesados (5 % de 180); hubo 18.</li>
+      <li>Reproceso = 54/180 = <b>0,30 h/cuadro</b> (18 min). Por cuadro reprocesado: 54/18 = 3 h.</li>
+      <li>Entregas en plazo = 51/60 = <b>85 %</b> → 5 puntos bajo la meta.</li>
+      <li>Proceso: RP y horas de reproceso. Resultado: entregas en plazo. Los de proceso avisan antes.</li>
+      <li>El reproceso es causa <i>plausible</i> de los retrasos, pero es hipótesis: cruzar pedidos retrasados con cuadros reprocesados (decisiones basadas en evidencias).</li>
+    </ul>
+  </details>
+  <div class="trap"><b>Trampa de cálculo:</b> 20 fallos de 250 → RP = 230/250 = 92,0 %. Distractores: 20/230 → 91,3 % (fallos entre aprobados); 8,0 % (tasa de fallo); 250/230 = 108,7 %.</div>
+
+  <h3>3 · Ciclo PDCA (Shewhart, difundido por Deming)</h3>
+  <div class="tbl"><table>
+    <tr><th>Fase</th><th>Qué se hace</th><th>Ej. taller (RP 90 % → meta 95 %)</th></tr>
+    <tr><td><b>P</b> Planificar</td><td>Definir el problema con datos, analizar causas, objetivo medible, decidir qué probar</td><td>11 de 18 fallos = cableado y apriete de bornas. Objetivo RP ≥ 95 % en 3 meses</td></tr>
+    <tr><td><b>D</b> Hacer</td><td>Aplicar a <b>pequeña escala</b>, con quienes ejecutan el proceso, y registrar</td><td>Hoja de verificación + llave dinamométrica en una de dos líneas, un mes</td></tr>
+    <tr><td><b>C</b> Verificar</td><td>Medir con el mismo indicador y <b>comparar con el objetivo</b>. ¿Mejora por la acción o por otra causa?</td><td>RP de la línea piloto vs la otra línea y vs partida</td></tr>
+    <tr><td><b>A</b> Actuar</td><td>Si funciona: <b>estandarizar</b> y extender; si no, volver a P</td><td>Incorporar la hoja al procedimiento, formar a todos</td></tr>
+  </table></div>
+  <p class="small">Estandarización = <b>cuña</b>: impide volver al nivel anterior. Sin C, el PDCA es «hacer cosas»; sin indicador definido antes de empezar, no hay con qué verificar.</p>
+  <div class="trap"><b>Trampa:</b> C ≠ inspeccionar el 100 % de las piezas; C ≠ revisar el plan; estandarizar y extender es A.</div>
+
+  <h3>4 · Liderazgo</h3>
+  <p><b>Qué corresponde a la dirección (5):</b> definir el propósito (misión, visión, política) · fijar objetivos medibles y coherentes, desplegados por procesos · poner los recursos («un objetivo sin recursos es un deseo») · dar ejemplo (no expedir, parar, invertir en prevención) · revisar y decidir.</p>
+  <div class="key">«La calidad no se delega; se delega su coordinación.» <b>ISO 9001:2026</b> (publicada el 16-sep-2026) refuerza el liderazgo y la cultura de la calidad.</div>
+  <div class="tbl"><table>
+    <tr><th></th><th>Administrar</th><th>Liderar</th></tr>
+    <tr><td>Se ocupa de</td><td>La complejidad: que se cumpla lo previsto</td><td>El cambio: hacia dónde ir</td></tr>
+    <tr><td>Horizonte</td><td>Corto plazo: planes, presupuestos, plazos</td><td>Largo plazo: visión y dirección</td></tr>
+    <tr><td>Con las personas</td><td>Organiza, asigna, controla</td><td>Alinea, compromete, desarrolla</td></tr>
+    <tr><td>Ante una desviación</td><td>La corrige para volver al plan</td><td>Se pregunta qué la produce en el sistema</td></tr>
+    <tr><td>Pregunta</td><td>¿Se ha cumplido lo previsto?</td><td>¿Vamos en la dirección correcta?</td></tr>
+  </table></div>
+  <p class="small">No son excluyentes ni dependen del nivel: el mismo jefe de taller necesita las dos.</p>
+
+  <h4>Despliegue de objetivos en cascada</h4>
+  <p>El <b>cómo</b> de cada nivel se convierte en el <b>qué</b> del nivel siguiente (dirección → proceso → equipo). Los objetivos se <b>negocian</b>, no solo se imponen: quien los cumple comprueba que son alcanzables y que dependen de él. Bien desplegado = contribuye de forma medible al de arriba y depende de lo que ese nivel controla.</p>
+  <div class="tbl"><table>
+    <tr><th>Nivel</th><th>Qué (objetivo medible)</th><th>Cómo (medios)</th></tr>
+    <tr><td>Dirección</td><td>Entregas en plazo ≥ 95 % en 2027</td><td>Reducir reprocesos; lanzar órdenes con material completo</td></tr>
+    <tr><td>Fabricación</td><td>RP en ensayo ≥ 97 %</td><td>Verificar cableado antes del ensayo; formar en apriete</td></tr>
+    <tr><td>Equipo montaje</td><td>Hoja de verificación en el 100 %; cero errores de cableado</td><td>Autocontrol con hoja firmada; revisión semanal</td></tr>
+  </table></div>
+
+  <h4>Participación (principio 3 del TQM: quien opera el proceso es quien mejor lo conoce)</h4>
+  <div class="tbl"><table>
+    <tr><th>Nivel</th><th>Significa</th></tr>
+    <tr><td>1 Informar</td><td>Conoce objetivos y resultados de su proceso</td></tr>
+    <tr><td>2 Consultar</td><td>Se le pide opinión antes de cambiar un método o equipo</td></tr>
+    <tr><td>3 Implicar</td><td>Participa en equipos de mejora y círculos de calidad</td></tr>
+    <tr><td>4 Delegar</td><td>Autocontrol: verifica y registra su propio trabajo</td></tr>
+    <tr><td>5 Autonomía</td><td>Puede retener el producto o parar si detecta un defecto</td></tr>
+  </table></div>
+  <div class="tbl"><table>
+    <tr><th>Barrera</th><th>Síntoma en planta</th><th>Qué hace la dirección</th></tr>
+    <tr><td>Miedo a la culpa</td><td>Defectos ocultos o corregidos «por lo bajo»</td><td>Error = fallo del sistema, no de la persona (Deming: eliminar el miedo)</td></tr>
+    <tr><td>Objetivos contradictorios</td><td>Se prima volumen, se expide lo dudoso</td><td>Equilibrar indicadores: producción y calidad</td></tr>
+    <tr><td>Sugerencias sin respuesta</td><td>La gente deja de proponer</td><td>Responder siempre, en plazo, explicando</td></tr>
+    <tr><td>Falta de tiempo y formación</td><td>Mejora «cuando haya tiempo»</td><td>Reservar tiempo en jornada, formar</td></tr>
+    <tr><td>Incoherencia de la dirección</td><td>«Calidad primero» pero se premia lo contrario</td><td>Dar ejemplo en decisiones que cuestan dinero</td></tr>
+  </table></div>
+
+  <h3>Casos prácticos (resumen de soluciones)</h3>
+  <details><summary>Caso 2 · Conservera: todos en verde, cliente al 78 % (contrato 95 %)</summary>
+    <ul>
+      <li>Cada departamento optimiza su tramo; nadie gestiona el proceso <b>pedido → entrega</b>. Propietario: responsable de operaciones / cadena de suministro con autoridad de la dirección.</li>
+      <li>Estratégicos: revisión por la dirección, fijación de objetivos anuales. Operativos: recepción de pescado, esterilización en autoclave. Apoyo: mantenimiento de autoclaves, calibración de sondas.</li>
+      <li>Resultado: pedidos completos y en plazo / entregados × 100, meta ≥ 95 %. Proceso: días desde entrada del pedido hasta liberación del lote; o % órdenes lanzadas con materia prima disponible.</li>
+      <li>Conclusión: se medían funciones, no el proceso. Más indicadores departamentales no lo arreglan.</li>
+    </ul>
+  </details>
+  <details><summary>Caso 3 · El lote del viernes (pintura 55–58 µm, mínimo 60 µm)</summary>
+    <ul>
+      <li>Fallos: objetivos contradictorios (incentivo por facturación), autoridad mal asignada (quien detecta no puede retener), dirección inaccesible sin suplente, normalización de la desviación («siempre ha pasado»), miedo.</li>
+      <li>Esta tarde: no expedir como conforme, identificar y segregar, ampliar la medición, avisar al cliente, pedir concesión por escrito o retocar. Lunes: registrar NC, analizar causa en la línea de pintura, revisar registros.</li>
+      <li>Regla: <i>cualquier persona que detecte una NC puede retener; solo quien designe la dirección puede liberar, con registro y, si no cumple, con autorización del cliente.</i></li>
+      <li>Que el cliente no haya reclamado <b>no</b> autoriza a entregar fuera de especificación.</li>
+    </ul>
+  </details>
+  <div class="trap"><b>Trampas del cap. 7:</b> propietario ≠ mayor rango ≠ dpto. de calidad · indicador de resultado = lo que recibe el cliente (horas de reproceso y tiempo de montaje son de proceso; % formados mide un recurso) · liderar no es solo de la alta dirección ni es «motivar vs sancionar» · objetivo desplegado ≠ copiado en todos los niveles ≠ impuesto sin consulta ≠ cualitativo · el operario que calla por miedo = barrera creada por el sistema, no falta de formación.</div>
+</section>
+
+<!-- ============ CAP 8 QFD ============ -->
+<section class="view" id="v-c8a">
+  <h2>Cap. 8 · Sesión I: despliegue de la función de calidad (QFD)</h2>
+  <div class="key"><b>QFD</b> (Quality Function Deployment): método estructurado que traduce los requisitos del cliente en características técnicas del producto y, en cascada, en características de componentes, parámetros del proceso y controles de producción. Herramienta estrella: <b>casa de la calidad</b>. Es de planificación: <b>ninguna norma obliga</b> a usarlo (ISO 16355 describe cómo).</div>
+  <h4>Problema que resuelve</h4>
+  <div class="flow"><span>Cliente: «que aguante toda la jornada»</span><em>→</em><span>Comercial: «batería grande»</span><em>→</em><span>Ingeniería: «5 Ah» (¿60 o 90 Wh? falta la tensión)</span><em>→</em><span>Producción: 5 Ah + motor antiguo</span><em>→</em><span>«Se acaba a media tarde»</span></div>
+  <p class="small">Nadie miente: en cada traspaso se pierde información y se añade una suposición. Cumple todas las especificaciones internas, no lo que pidió el cliente.</p>
+
+  <h4>Historia</h4>
+  <div class="tbl"><table>
+    <tr><th>Año</th><th>Hito</th></tr>
+    <tr><td>1966</td><td>Yoji Akao plantea en Japón el despliegue de la calidad</td></tr>
+    <tr><td>1972</td><td>Astillero Mitsubishi Heavy Industries (Kobe): primera tabla requisitos–características</td></tr>
+    <tr><td>1977–1984</td><td>Toyota (furgonetas): costes de arranque de producción −61 %</td></tr>
+    <tr><td>1988</td><td>Hauser y Clausing, «The House of Quality», Harvard Business Review</td></tr>
+    <tr><td>2021</td><td>ISO 16355-1, principios generales del QFD (1.ª ed. 2015)</td></tr>
+  </table></div>
+
+  <h3>Qué y cómo</h3>
+  <div class="grid">
+    <div class="card"><b>QUÉ</b> · lo que quiere el cliente<ul><li>En su lenguaje, con sus palabras</li><li><b>Sin ninguna solución técnica dentro</b></li><li>Importancia de 1 a 5 (la pone el cliente)</li></ul><span class="small muted">«Que aguante toda la jornada» · 5</span></div>
+    <div class="card"><b>CÓMO</b> · cómo lo mediremos<ul><li>Magnitud técnica medible, con unidad</li><li>Sentido de mejora: ↑ más es mejor, ↓ menos es mejor</li><li>Independiente de la solución concreta</li></ul><span class="small muted">Energía de la batería (Wh) ↑</span></div>
+  </div>
+  <div class="trap"><b>Trampa:</b> un cómo NO es una solución. «Batería de litio», «motor sin escobillas», «tener app», «22 kW» son soluciones. «Energía (Wh)», «rendimiento del motor (%)» son cómos. «Buena batería» = cómo sin unidad (error).</div>
+
+  <h4>Voz del cliente: 5 pasos</h4>
+  <div class="flow"><span>1 Recoger<br><small>entrevistas, observación, reclamaciones; frases literales</small></span><em>›</em><span>2 Traducir<br><small>«¿para qué?» hasta la necesidad</small></span><em>›</em><span>3 Agrupar<br><small>diagrama de afinidad, árbol</small></span><em>›</em><span>4 Ponderar<br><small>1–5, encuesta o pares; la pone el cliente</small></span><em>›</em><span>5 Completar<br><small>obligatorios, legales, seguridad (Kano)</small></span></div>
+  <details><summary>Caso 4 · Punto de recarga: 8 frases → 5 qués</summary>
+    <ul>
+      <li>Soluciones disfrazadas: «22 kW» → tener el coche cargado por la mañana; «app» → cargar en horas baratas sin estar pendiente. «Que no me obligue a subir la potencia contratada» = necesidad de coste expresada como condición: válida.</li>
+      <li>5 qués: cargado por la mañana (a, b) · que no se vaya la luz (c, h) · horas baratas sin estar pendiente (d, e) · aguantar a la intemperie (f) · instalación rápida y sin obra (g).</li>
+      <li>Lo que nadie dice: <b>seguridad eléctrica</b> (contactos, sobrecargas, cortocircuitos; REBT ITC-BT-52). Requisito obligatorio: no compite en la priorización, se cumple siempre.</li>
+    </ul>
+  </details>
+
+  <h3>La casa de la calidad (orden de construcción)</h3>
+  <div class="tbl"><table>
+    <tr><th>#</th><th>Estancia</th><th>Pregunta</th></tr>
+    <tr><td>1</td><td>Qués e importancia</td><td>¿Qué quiere el cliente y cuánto le importa?</td></tr>
+    <tr><td>2</td><td>Evaluación competitiva</td><td>¿Cómo nos ve el cliente frente a la competencia?</td></tr>
+    <tr><td>3</td><td>Cómos y sentido de mejora</td><td>¿Con qué magnitudes técnicas lo mediremos?</td></tr>
+    <tr><td>4</td><td>Matriz de relaciones</td><td>¿Cuánto contribuye cada cómo a cada qué?</td></tr>
+    <tr><td>5</td><td>Tejado: correlaciones técnicas</td><td>¿Qué cómos se ayudan y cuáles se estorban?</td></tr>
+    <tr><td>6</td><td>Importancia técnica y valores objetivo</td><td>¿Qué priorizamos y qué valor fijamos?</td></tr>
+  </table></div>
+  <p class="small">Primero el cliente (1–2), después la ingeniería (3–5), al final la decisión (6).</p>
+
+  <h4>Matriz de relaciones: 9 fuerte · 3 media · 1 débil · vacío</h4>
+  <div class="tbl"><table>
+    <tr><th>Diagnóstico</th><th>Significa</th></tr>
+    <tr><td>Fila vacía</td><td>Un qué que no atiende ningún cómo: <b>falta un cómo</b></td></tr>
+    <tr><td>Columna vacía</td><td>Un cómo que nadie pidió: ¿sobra o responde a un obligatorio que falta?</td></tr>
+    <tr><td>Matriz llena de nueves</td><td>No discrimina: si todo es muy importante, nada lo es</td></tr>
+    <tr><td>Diagonal perfecta</td><td>Cada qué con su cómo y nada más: no prioriza</td></tr>
+  </table></div>
+  <p class="small">Convenio de la asignatura: la matriz anota cuánto <b>ayuda</b>; los efectos en contra van al <b>tejado</b>.</p>
+  <div class="formula">IT(cómo j) = Σ importancia(qué i) × relación(i,j) &nbsp;&nbsp;·&nbsp;&nbsp; Relativa = IT / Σ IT × 100 [%]</div>
+  <details><summary>Cálculo guiado: taladro atornillador</summary>
+    <div class="tbl"><table>
+      <tr><th>Cómo</th><th>Cálculo</th><th class="n">IT</th><th class="n">%</th><th>Objetivo</th></tr>
+      <tr><td>Energía (Wh) ↑</td><td>5×9</td><td class="n">45</td><td class="n">22,4</td><td>≥ 90 Wh</td></tr>
+      <tr><td>Masa (kg) ↓</td><td>4×9 + 3×1</td><td class="n">39</td><td class="n">19,4</td><td>≤ 1,8 kg</td></tr>
+      <tr><td>Par (N·m) ↑</td><td>4×9</td><td class="n">36</td><td class="n">17,9</td><td>≥ 60 N·m</td></tr>
+      <tr><td>Rendim. motor (%) ↑</td><td>5×3 + 4×1 + 4×3</td><td class="n">31</td><td class="n">15,4</td><td>≥ 80 %</td></tr>
+      <tr><td>Caída sin daño (m) ↑</td><td>3×9</td><td class="n">27</td><td class="n">13,4</td><td>≥ 2 m</td></tr>
+      <tr><td>Tiempo de carga (min) ↓</td><td>5×1 + 2×9</td><td class="n">23</td><td class="n">11,4</td><td>≤ 45 min</td></tr>
+      <tr><th>Total</th><th></th><th class="n">201</th><th class="n">100</th><th></th></tr>
+    </table></div>
+    <p class="small">El rendimiento del motor no tiene ningún 9 pero supera a la caída sin daño: contribuye a <b>tres</b> qués. La prioridad la da la suma ponderada, no la relación más fuerte.</p>
+  </details>
+
+  <h4>Tejado</h4>
+  <p>+ / ++ sinergia (mejorar uno ayuda al otro) · − / −− conflicto (mejorar uno empeora el otro). <b>Se lee respecto al sentido de mejora</b>, no a la magnitud: energía ↑ y masa ↓ crecen juntas físicamente → conflicto fuerte (−−).</p>
+  <div class="grid">
+    <div class="card"><b>Compromiso</b><br>Valor objetivo equilibrado: 90 Wh sin pasar de 1,8 kg.</div>
+    <div class="card"><b>Innovación</b><br>Cambiar la tecnología para romper el conflicto: celdas de mayor densidad energética.</div>
+    <div class="card"><b>Prioridad</b><br>Si no hay salida, manda el cómo con más importancia técnica.</div>
+  </div>
+
+  <h4>Despliegue en cascada: 4 casas («el cómo de cada fase es el qué de la siguiente»)</h4>
+  <div class="tbl"><table>
+    <tr><th>Fase</th><th>Traduce</th><th>Ej. taladro</th></tr>
+    <tr><td>1 Planificación del producto</td><td>Requisitos del cliente → características del producto</td><td>«Toda la jornada» → ≥ 90 Wh</td></tr>
+    <tr><td>2 Despliegue de componentes</td><td>Características del producto → de las piezas</td><td>5 celdas de 5 Ah en serie: 5 × 3,6 V × 5 Ah = 90 Wh</td></tr>
+    <tr><td>3 Planificación del proceso</td><td>Características de las piezas → parámetros del proceso</td><td>Uniones de baja resistencia → corriente, tiempo y presión de la soldadura por puntos</td></tr>
+    <tr><td>4 Planificación de la producción</td><td>Parámetros del proceso → controles e instrucciones</td><td>Resistencia interna al 100 %, ensayo de soldaduras por muestreo</td></tr>
+  </table></div>
+  <p class="small">Fases 2 y 3 = punto de partida del AMFE de diseño y de proceso.</p>
+
+  <details><summary>Caso 5 · Casa del punto de recarga (solución de referencia)</summary>
+    <div class="tbl"><table>
+      <tr><th>Cómo</th><th>Unidad</th><th class="n">IT</th><th class="n">%</th><th>Objetivo</th></tr>
+      <tr><td>Reacción gestión dinámica de potencia ↓</td><td>s</td><td class="n">60</td><td class="n">30,9</td><td>&lt; limitador</td></tr>
+      <tr><td>Potencia máxima de carga ↑</td><td>kW</td><td class="n">45</td><td class="n">23,2</td><td>7,4 kW (1 fase)</td></tr>
+      <tr><td>Franjas programables ↑</td><td>n.º/día</td><td class="n">44</td><td class="n">22,7</td><td>≥ 2/día</td></tr>
+      <tr><td>Grado de protección ↑</td><td>IP</td><td class="n">27</td><td class="n">13,9</td><td>≥ IP54</td></tr>
+      <tr><td>Tiempo de instalación ↓</td><td>h</td><td class="n">18</td><td class="n">9,3</td><td>≤ 4 h</td></tr>
+    </table></div>
+    <p class="small">La gestión dinámica supera a la potencia porque atiende a tres qués; la frase más llamativa («22 kW») no era la prioridad. Tejado: potencia–instalación (−), gestión dinámica–instalación (−, sensor en el cuadro), gestión dinámica–potencia (+). 40 km/día ≈ 7 kWh → ~1 h a 7,4 kW.</p>
+  </details>
+
+  <div class="grid" style="margin-top:12px">
+    <div class="card"><b>Ventajas</b><ul class="small"><li>Trazar cada decisión hasta una frase del cliente</li><li>Obliga a trabajar en equipo</li><li>Cambios en el papel, antes de fabricar utillajes</li><li>Deja escrito el porqué del diseño</li></ul></div>
+    <div class="card"><b>Límites</b><ul class="small"><li>Laborioso: 30 qués × 40 cómos = 1.200 celdas</li><li>9-3-1 es juicio del equipo, no medida</li><li>Vale lo que valga la voz del cliente</li><li>Los números orientan, no deciden</li></ul></div>
+    <div class="card"><b>Errores frecuentes</b><ul class="small"><li>Qués que son soluciones</li><li>Cómos sin unidad</li><li>Matrices llenas de nueves</li><li>Leer el tejado por la magnitud</li></ul></div>
+  </div>
+  <div class="key"><b>Debate IA:</b> la IA amplía la escucha (volumen, agrupar, contar frecuencias), no la sustituye (lo latente, el uso real, quien no escribe reseñas). Regla: cada qué debe trazarse hasta una fuente real; si no, es una hipótesis a validar.</div>
+  <div class="trap"><b>Trampas QFD:</b> la importancia de los qués la pone el cliente, no la empresa · la prioridad técnica no es la relación más fuerte sino Σ ponderada · los obligatorios (seguridad, REBT) no entran a competir en la casa · el tejado se lee con el sentido de mejora · el QFD no es obligatorio por norma.</div>
+</section>
+
+<!-- ============ CAP 8 AMFE ============ -->
+<section class="view" id="v-c8b">
+  <h2>Cap. 8 · Sesión II: AMFE (análisis modal de fallos y efectos)</h2>
+  <div class="key"><b>AMFE</b> (FMEA): método sistemático y <b>preventivo</b> para identificar cómo puede fallar un producto o proceso (modos), qué consecuencias tendría (efectos), por qué (causas) y con qué controles contamos, para priorizar y actuar <b>antes</b> de que ocurra. Con análisis explícito de criticidad: <b>AMFEC</b> (FMECA).</div>
+  <h4>Por qué anticiparse: coste relativo de corregir el mismo fallo</h4>
+  <div class="flow"><span>Diseño · 1</span><em>→</em><span>Fabricación · 10</span><em>→</em><span>Inspección final · 100</span><em>→</em><span>Cliente · 1.000</span></div>
+  <p class="small">El AMFE trabaja en las dos primeras: es prevención, no inspección.</p>
+  <h4>Historia</h4>
+  <div class="tbl"><table>
+    <tr><td>1949</td><td>Fuerzas armadas EE. UU., norma MIL-P-1629</td></tr>
+    <tr><td>Años 60</td><td>NASA, programa Apollo</td></tr>
+    <tr><td>Años 70</td><td>Industria del automóvil</td></tr>
+    <tr><td>1993</td><td>Primer manual AMFE de la AIAG</td></tr>
+    <tr><td>2018</td><td>IEC 60812, 3.ª edición (norma internacional)</td></tr>
+    <tr><td>2019</td><td>Manual AIAG-VDA: siete pasos y <b>prioridad de acción</b></td></tr>
+  </table></div>
+
+  <h3>AMFE de diseño vs de proceso</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>Diseño</th><th>Proceso</th></tr>
+    <tr><td>Idea</td><td>El producto falla en el uso</td><td>El proceso fabrica mal</td></tr>
+    <tr><td>Analiza</td><td>Producto y componentes</td><td>Operaciones de fabricación, montaje y control</td></tr>
+    <tr><td>Pregunta</td><td>¿Cómo puede fallar en uso aunque se fabrique exactamente según plano?</td><td>¿Cómo puede el proceso producir algo que no cumpla el diseño?</td></tr>
+    <tr><td>Cuándo</td><td>Antes de congelar el diseño</td><td>Antes de lanzar la serie</td></tr>
+    <tr><td>Parte de</td><td>Fase 2 QFD + diagrama de bloques</td><td>Fase 3 QFD + diagrama de flujo</td></tr>
+    <tr><td>Ejemplo</td><td>Pletina de batería de sección insuficiente que se calienta</td><td>Soldadura por puntos con corriente insuficiente</td></tr>
+  </table></div>
+  <p class="small">El AMFE de proceso <b>supone que el diseño es correcto</b>.</p>
+
+  <h3>Cadena del fallo</h3>
+  <div class="flow"><span><b>Causa</b><br><small>por qué ocurre · destornillador sin control de par</small></span><em>→</em><span><b>Modo de fallo</b><br><small>cómo deja de cumplir · borne por debajo del par</small></span><em>→</em><span><b>Efecto</b><br><small>qué sufre el cliente · se calienta, disparo o daño</small></span></div>
+  <p><b>Controles actuales</b>: prevención (previenen la causa: instrucción de montaje) y detección (detectan modo o causa: inspección visual final).</p>
+  <div class="key">Truco: el <b>efecto</b> lo sufre el cliente, el <b>modo</b> lo ve el ingeniero, la <b>causa</b> la corrige el proceso. Cada fila = una cadena causa–modo–efecto; un modo con tres causas ocupa tres filas.</div>
+
+  <h3>Índices (1–10, en los tres más alto = peor)</h3>
+  <div class="tbl"><table>
+    <tr><th>Valor</th><th>Gravedad (G) · del efecto</th><th>Ocurrencia (O) · de la causa</th><th>Detección (D) · de los controles</th></tr>
+    <tr><td>9–10</td><td>Seguridad o incumple legislación (10: sin aviso)</td><td>Muy alta: casi inevitable</td><td>Casi imposible: sin control o no fiable</td></tr>
+    <tr><td>7–8</td><td>Pérdida de función principal</td><td>Alta: fallos repetidos</td><td>Baja: inspección visual ocasional</td></tr>
+    <tr><td>4–6</td><td>Pérdida/degradación de función secundaria</td><td>Moderada: ocasionales</td><td>Moderada: inspección manual 100 % o muestreo</td></tr>
+    <tr><td>2–3</td><td>Defecto menor que el cliente nota</td><td>Baja: muy pocos fallos</td><td>Alta: control automático al 100 %</td></tr>
+    <tr><td>1</td><td>Sin efecto apreciable</td><td>Remota: causa eliminada</td><td>Casi segura: a prueba de errores</td></tr>
+  </table></div>
+  <div class="trap"><b>Trampa:</b> en detección también más alto es peor. D = 10 → el fallo llega al cliente sin detectarse; D = 1 → imposible que pase (poka-yoke).</div>
+
+  <h3>NPR y priorización</h3>
+  <div class="formula">NPR = G · O · D &nbsp;&nbsp;(de 1 a 1.000)</div>
+  <ol>
+    <li><b>Primero la gravedad</b>: todo modo con G ≥ 9 se trata, sea cual sea su NPR.</li>
+    <li><b>Después el NPR</b>: los que superan el umbral de la empresa (p. ej., ≥ 100) o el 20 % con NPR más alto.</li>
+    <li><b>A igualdad</b>: manda la gravedad; después, la ocurrencia.</li>
+  </ol>
+  <p class="small">El umbral no lo fija ninguna norma: lo decide la empresa y se escribe <b>antes</b> de puntuar. NPR alto = «mira esto primero»; NPR bajo ≠ «es seguro».</p>
+  <details><summary>Cálculo guiado: cuadros de distribución (criterio G ≥ 9 o NPR ≥ 100)</summary>
+    <div class="tbl"><table>
+      <tr><th>Modo</th><th>G·O·D</th><th class="n">NPR</th><th>¿Se trata?</th></tr>
+      <tr><td>A · Par de apriete insuficiente</td><td>8·6·7</td><td class="n">336</td><td>Sí (NPR)</td></tr>
+      <tr><td>D · Cableado de control con sección inferior</td><td>6·4·6</td><td class="n">144</td><td>Sí (NPR)</td></tr>
+      <tr><td>E · Protocolo de ensayo sin adjuntar</td><td>4·5·5</td><td class="n">100</td><td>Sí (NPR ≥ 100)</td></tr>
+      <tr><td>B · Etiqueta de circuito ≠ esquema</td><td>9·2·4</td><td class="n">72</td><td><b>Sí, el primero junto con A</b> (G = 9, seguridad)</td></tr>
+      <tr><td>C · Rayado de la puerta</td><td>3·7·3</td><td class="n">63</td><td>No</td></tr>
+    </table></div>
+    <p class="small">B «engaña» al NPR: cuarto por NPR, pero un mantenedor puede intervenir en un circuito que cree sin tensión.</p>
+  </details>
+
+  <h3>Acciones: qué índice baja cada una</h3>
+  <div class="tbl"><table>
+    <tr><th>Índice</th><th>Cómo se baja</th><th>Ejemplo</th></tr>
+    <tr><td>G</td><td><b>Solo cambiando el diseño</b> (eliminar o limitar el efecto)</td><td>Envolvente y soportes autoextinguibles</td></tr>
+    <tr><td>O</td><td>Eliminando o controlando la causa</td><td>Destornillador dinamométrico; bornes de resorte</td></tr>
+    <tr><td>D</td><td>Mejorando los controles</td><td>Marca de apriete, termografía, ensayo automático 100 %</td></tr>
+  </table></div>
+  <p>Preferencia: cambiar el diseño o eliminar la causa <b>antes que inspeccionar más</b> (inspeccionar no hace el proceso más fiable, solo descubre antes sus fallos: punto 3 de Deming). Tras la acción, el NPR se recalcula <b>con datos</b>: 8·6·7 = 336 → 8·2·5 = 80 (G no cambia).</p>
+
+  <h3>Límites del NPR</h3>
+  <ul>
+    <li><b>Escalas ordinales</b>: un 8 no es el doble de grave que un 4.</li>
+    <li>Mismo NPR, riesgos distintos: G10·O2·D3 = 60 (catastrófico y raro) = G2·O6·D5 = 60 (molestia frecuente).</li>
+    <li><b>Sensibilidad</b>: con valores altos, bajar un punto de D mueve mucho el NPR y puede maquillar.</li>
+    <li>AIAG-VDA (2019) sustituye el NPR por la <b>prioridad de acción</b> (alta/media/baja), con más peso de la gravedad.</li>
+  </ul>
+  <h3>Cómo se hace (6 pasos) y cómo no</h3>
+  <div class="grid">
+    <div class="card"><ol class="small"><li>Equipo multidisciplinar y alcance</li><li>Estructura y funciones: diagrama de bloques (diseño) o de flujo (proceso)</li><li>Modos, efectos y causas, fila a fila</li><li>Índices con escalas escritas y acordadas</li><li>Priorizar y decidir acciones con responsable y plazo</li><li>Implantar, recalcular y mantenerlo vivo</li></ol></div>
+    <div class="card"><b>Cómo no</b><ul class="small"><li>Una sola persona en su mesa</li><li>Hecho al final, para entregarlo al cliente</li><li>Puntuar sin escala escrita</li><li>Acciones sin responsable ni plazo</li><li>No reabrirlo tras una reclamación</li></ul><p class="small">Documento vivo: se revisa con cada cambio, reclamación y no conformidad.</p></div>
+  </div>
+  <details><summary>Caso 6 · AMFE de proceso de la línea de latas (claves para razonar)</summary>
+    <p class="small muted">El temario plantea el caso sin solución publicada. Claves deducidas de las escalas:</p>
+    <ul class="small">
+      <li>Cerrado (pérdida de hermeticidad) y esterilización (supervivencia de microorganismos): riesgo para la salud → <b>G 9–10</b> → se tratan siempre.</li>
+      <li>Esterilización: el control registra la temperatura con <b>la misma sonda que deriva</b> → el control no detecta su propia causa → D muy alto. Acción: segunda sonda independiente / calibración más frecuente (enlace con «la calibración es de apoyo pero crítica»).</li>
+      <li>Codificado: pérdida de trazabilidad (ante una alerta, retirar mucho más producto). Etiquetado torcido: G baja (imagen).</li>
+    </ul>
+  </details>
+  <div class="trap"><b>Trampas AMFE:</b> G va con el efecto, O con la causa, D con los controles · G solo baja cambiando el diseño · un NPR bajo no significa seguro · el umbral lo decide la empresa, no una norma · AMFE de proceso asume diseño correcto · más inspección baja D, no O.</div>
+</section>
+
+<!-- ============ CAP 9 ============ -->
+<section class="view" id="v-c9">
+  <h2>Cap. 9 · Calidad en los servicios · SERVQUAL</h2>
+  <div class="key"><b>Servicio</b> (ISO 9000:2015, 3.7.7): salida de una organización con al menos una actividad, <b>necesariamente llevada a cabo entre la organización y el cliente</b>. Un producto se inspecciona antes de entregarlo; un servicio, en gran parte, no: se produce mientras el cliente lo recibe.</div>
+  <h3>Cuatro características</h3>
+  <div class="tbl"><table>
+    <tr><th>Característica</th><th>Significa</th><th>Consecuencia</th></tr>
+    <tr><td><b>Intangibilidad</b></td><td>No se ve, toca ni prueba antes de contratarlo</td><td>El cliente juzga por indicios (aspecto del técnico, informe, explicaciones)</td></tr>
+    <tr><td><b>Inseparabilidad</b></td><td>Se produce y consume a la vez, a menudo con el cliente presente</td><td>No hay inspección final: la calidad se asegura antes (formación, procedimiento)</td></tr>
+    <tr><td><b>Heterogeneidad</b></td><td>Varía según quién, cuándo y para quién</td><td>Estandarizar lo esencial sin perder la atención a cada cliente</td></tr>
+    <tr><td><b>Caducidad</b></td><td>No se puede almacenar (la hora de técnico no usada se pierde)</td><td>Ajustar capacidad y demanda: guardias, citas, picos</td></tr>
+  </table></div>
+  <details><summary>Apertura: ¿producto o servicio?</summary>
+    <ul class="small">
+      <li>Transformador 630 kVA en serie: producto (+ servicios asociados); ensayos de rutina antes de expedir.</li>
+      <li>Reparación de avería en línea MT: servicio; solo cabe prevenir y verificar al terminar.</li>
+      <li>Auditoría energética con informe: servicio con soporte tangible; el informe se revisa, la visita y el trato no.</li>
+      <li>Suministro eléctrico: ambos; la onda de tensión se mide (UNE-EN 50160), la atención se valora cuando ocurre.</li>
+    </ul>
+  </details>
+
+  <h3>Qué juzga el cliente</h3>
+  <div class="grid">
+    <div class="card"><b>Calidad técnica · qué recibe</b><br>El resultado (funciona, avería resuelta, informe correcto). Medible con indicadores internos.</div>
+    <div class="card"><b>Calidad funcional · cómo lo recibe</b><br>El proceso (puntualidad, explicaciones, trato, limpieza). <b>Solo se mide preguntando al cliente.</b></div>
+    <div class="card"><b>Momentos de la verdad</b><br>Cada contacto es un examen. Jan Carlzon, presidente de SAS desde 1981, libro <i>Moments of Truth</i> (1987).</div>
+    <div class="card"><b>Imagen</b><br>Filtra las dos: buena reputación hace perdonar un fallo; mala lo magnifica (Grönroos, 1984).</div>
+  </div>
+  <p><b>Calidad percibida</b> = lo que el cliente percibe frente a lo que esperaba. Un trabajo técnicamente impecable puede percibirse como mal servicio.</p>
+
+  <h3>Modelo de las 5 brechas (Parasuraman, Zeithaml y Berry)</h3>
+  <div class="tbl"><table>
+    <tr><th>Brecha</th><th>Entre…</th><th>Ejemplo (mantenimiento eléctrico)</th><th>Qué la cierra</th></tr>
+    <tr><td><b>1 · Conocimiento</b> (conocer)</td><td>Lo que espera el cliente ↔ lo que la dirección cree que espera</td><td>La empresa cree que solo mira el precio; el cliente valora que le avisen antes</td><td>Escuchar la voz del cliente (cap. 7, QFD)</td></tr>
+    <tr><td><b>2 · Especificación</b> (especificar)</td><td>Lo que la dirección sabe ↔ los estándares que fija</td><td>Se sabe que quieren aviso previo, pero no hay estándar de aviso</td><td>Casa de la calidad: qués → cómos con valor objetivo</td></tr>
+    <tr><td><b>3 · Prestación</b> (prestar)</td><td>Los estándares ↔ el servicio prestado</td><td>El procedimiento exige parte firmado; la mitad no lo deja</td><td>Procesos, indicadores, formación, AMFE de proceso, 5S</td></tr>
+    <tr><td><b>4 · Comunicación</b> (prometer)</td><td>El servicio prestado ↔ lo que se promete</td><td>Web: «técnico en 2 h»; media real 4 h</td><td>Coordinar comercial y operaciones; prometer lo que se mide</td></tr>
+    <tr><td><b>5 · Calidad percibida</b> (percibir)</td><td>Lo esperado ↔ lo percibido</td><td>Quejas con indicadores internos en verde</td><td>SERVQUAL la mide; se cierra cerrando las otras cuatro</td></tr>
+  </table></div>
+  <div class="key">Brechas 1–4: dentro de la organización. La 5 es la que vive el cliente y la que mide SERVQUAL. «Lo que se promete eleva lo que se espera.» Una queja es siempre brecha 5; el trabajo es averiguar cuál de las cuatro internas la produce.</div>
+
+  <h3>SERVQUAL</h3>
+  <div class="tbl"><table>
+    <tr><th>Dimensión</th><th class="n">Ítems</th><th>Definición</th><th>Ejemplo</th></tr>
+    <tr><td>Elementos tangibles</td><td class="n">4</td><td>Instalaciones, equipos, aspecto del personal</td><td>«Llevan equipos en buen estado»</td></tr>
+    <tr><td><b>Fiabilidad</b></td><td class="n">5</td><td>Prestar el servicio prometido de forma fiable y precisa</td><td>«Cuando prometen un plazo, lo cumplen»</td></tr>
+    <tr><td>Capacidad de respuesta</td><td class="n">4</td><td>Disposición a ayudar y servicio rápido</td><td>«Atienden con rapidez los avisos»</td></tr>
+    <tr><td>Seguridad</td><td class="n">4</td><td>Conocimiento y cortesía del personal; inspirar confianza</td><td>«Los técnicos transmiten confianza»</td></tr>
+    <tr><td>Empatía</td><td class="n">5</td><td>Atención cuidadosa e individualizada</td><td>«Horarios adaptados al cliente»</td></tr>
+  </table></div>
+  <div class="trap"><b>Trampa:</b> «Seguridad» en SERVQUAL = confianza que inspira el personal, <b>no</b> seguridad eléctrica (esa es requisito obligatorio). En los estudios originales la <b>fiabilidad</b> fue siempre la dimensión más importante.</div>
+  <ul>
+    <li><b>Expectativas (E)</b>: 22 afirmaciones sobre una empresa excelente del sector, escala 1–7.</li>
+    <li><b>Percepciones (P)</b>: las mismas 22, referidas a la empresa evaluada.</li>
+    <li><b>Importancia</b>: el cliente reparte <b>100 puntos</b> entre las 5 dimensiones (versión revisada de 1991).</li>
+  </ul>
+  <div class="formula">Q(ítem) = P − E ∈ [−6, +6] · Q(dimensión) = media de sus ítems · Global = media de las 5 · Ponderada = Σ (puntos/100)·Q(dim)</div>
+  <p class="small">Q &lt; 0 por debajo de lo esperado · Q = 0 cumple · Q &gt; 0 supera. Un 6 sobre 7 es mala noticia si esperaba 7.</p>
+  <details><summary>Caso 8 · Instalador de puntos de recarga (solución)</summary>
+    <div class="tbl"><table>
+      <tr><th>Dimensión (peso)</th><th>Ítems P−E</th><th class="n">Brecha</th><th class="n">Peso·brecha</th></tr>
+      <tr><td>Tangibles (10)</td><td>+0,2 ; −0,6</td><td class="n">−0,2</td><td class="n">−0,020</td></tr>
+      <tr><td>Fiabilidad (35)</td><td>−1,6 (fecha) ; −0,6 (funciona día 1)</td><td class="n">−1,1</td><td class="n"><b>−0,385</b></td></tr>
+      <tr><td>Capacidad de respuesta (25)</td><td>−1,0 ; −1,4 (informar cuándo)</td><td class="n">−1,2</td><td class="n">−0,300</td></tr>
+      <tr><td>Seguridad (18)</td><td>−0,2 ; +0,2</td><td class="n">0,0</td><td class="n">0,000</td></tr>
+      <tr><td>Empatía (12)</td><td>−0,8 ; +0,2</td><td class="n">−0,3</td><td class="n">−0,036</td></tr>
+      <tr><th>Global</th><th></th><th class="n">−0,56</th><th class="n">−0,74</th></tr>
+    </table></div>
+    <ul class="small">
+      <li>Ponderada (−0,74) peor que sin ponderar (−0,56): las brechas grandes están en lo que más valora el cliente.</li>
+      <li>Mejorar primero <b>fiabilidad</b>: brecha casi igual que capacidad de respuesta (−1,1 vs −1,2) pero pesa más (35 vs 25) y es la que más resta.</li>
+      <li>Ítems 3 y 6: causa común probable = planificación de la agenda → problema de <b>proceso</b>, no de los técnicos.</li>
+      <li>Ítem 4: P = 6,2 buena, pero brecha −0,6 porque se espera casi 7 → requisito obligatorio.</li>
+      <li>Brechas positivas (1, 8, 10): no invertir ahí ahora, tampoco descuidar. ¿Brecha 4 detrás? ¿Qué plazo promete la web?</li>
+    </ul>
+  </details>
+  <div class="grid" style="margin-top:12px">
+    <div class="card"><b>Límites</b><ul class="small"><li>Expectativas ambiguas (¿ideal, razonable, previsto?)</li><li>2 × 22 afirmaciones: largo y repetitivo</li><li>Dimensiones no se reproducen en todos los sectores: adaptar ítems (Buttle, 1996)</li><li><b>SERVPERF</b> (Cronin y Taylor, 1992): solo percepciones; más corto, pierde la brecha</li></ul></div>
+    <div class="card"><b>Errores al aplicarlo</b><ul class="small"><li>Confundir seguridad con seguridad eléctrica</li><li>Quedarse con la media global sin leer ítems</li><li>Preguntar solo a los que siempre contestan</li><li>Mirar solo P: una P alta puede esconder una brecha</li></ul></div>
+  </div>
+  <p class="small">SERVQUAL no sustituye a los indicadores internos (plazo, averías resueltas a la primera): los completa con la mirada del cliente.</p>
+</section>
+
+<!-- ============ CAP 10 ============ -->
+<section class="view" id="v-c10">
+  <h2>Cap. 10 · Introducción a los ODS en la industria</h2>
+  <div class="key"><b>Desarrollo sostenible</b> (Informe Brundtland, «Nuestro futuro común», 1987): «desarrollo que satisface las necesidades del presente sin comprometer la capacidad de las generaciones futuras para satisfacer las suyas». <b>Tres dimensiones: económica, social y ambiental.</b> Conceptos: <i>necesidades</i> (esenciales de los más pobres, prioritarias) y <i>limitaciones</i> (las que tecnología y organización social imponen al medio ambiente).</div>
+  <div class="trap"><b>V/F de apertura:</b> los ODS no son ley (resolución de la Asamblea General: compromiso político) · son universales, también para España · sostenible ≠ ecológico (3 dimensiones) · los aprobaron los 193 Estados el 25-sep-2015 ✓.</div>
+
+  <h3>Seis hitos</h3>
+  <div class="tbl"><table>
+    <tr><th>Año</th><th>Dónde</th><th>Qué</th></tr>
+    <tr><td>1972</td><td>Estocolmo</td><td>Conferencia de la ONU sobre el Medio Humano, primera cumbre ambiental. Nace el <b>PNUMA</b></td></tr>
+    <tr><td>1987</td><td>Informe Brundtland</td><td>Define el desarrollo sostenible; objetivo político internacional</td></tr>
+    <tr><td>1992</td><td>Río de Janeiro</td><td>Cumbre de la Tierra: &gt; 178 países adoptan la <b>Agenda 21</b></td></tr>
+    <tr><td>2000</td><td>Nueva York</td><td>Declaración del Milenio: <b>8 ODM</b> para reducir la pobreza extrema antes de 2015</td></tr>
+    <tr><td>2012</td><td>Río+20</td><td>«El futuro que queremos»: se decide elaborar los ODS a partir de los ODM</td></tr>
+    <tr><td>2015</td><td>Nueva York</td><td>193 Estados aprueban la <b>Agenda 2030</b> con 17 ODS (25 de septiembre)</td></tr>
+  </table></div>
+  <p class="small">Idea (1987) → planes de acción (1992) → objetivos medibles (2000) → agenda para todos (2015). Johannesburgo (2002) reafirmó Río.</p>
+  <h4>Gestación 2011–2015</h4>
+  <div class="flow"><span>2011 · Colombia y Guatemala proponen ODS para Río+20</span><em>›</em><span>2012 · Río+20: proceso intergubernamental abierto</span><em>›</em><span>2013-14 · Grupo de Trabajo Abierto (30 puestos): 17 objetivos y 169 metas (jul-2014)</span><em>›</em><span>2015 · 8 rondas (ene–ago), consenso, aprobación en septiembre. En vigor 1-ene-2016</span></div>
+
+  <h3>Motivaciones: por qué no bastaban los ODM</h3>
+  <div class="grid">
+    <div class="card"><b>1 · Tarea a medias</b><br>Pobreza extrema: 1.900 M (1990) → 836 M (2015). Unos 800 M seguían en pobreza extrema y hambre.</div>
+    <div class="card"><b>2 · Planeta al límite</b><br>CO2 mundial +50 % desde 1990. Se estiman superados 7 de los 9 límites planetarios.</div>
+    <div class="card"><b>3 · Problemas conectados</b><br>Energía, clima, empleo, agua, desigualdad: interdependientes y sin fronteras. Agenda para todos, con empresas y ciudadanos.</div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Aspecto</th><th>ODM (2000–2015)</th><th>ODS (2016–2030)</th></tr>
+    <tr><td>Estructura</td><td><b>8 objetivos, 21 metas</b></td><td><b>17 objetivos, 169 metas</b></td></tr>
+    <tr><td>A quién</td><td>Sobre todo países en desarrollo</td><td>Todos: <b>universal</b></td></tr>
+    <tr><td>Elaboración</td><td>Poca participación</td><td>Negociación entre todos los Estados + consultas abiertas</td></tr>
+    <tr><td>Enfoque</td><td>Pobreza y desarrollo social</td><td>Tres dimensiones integradas</td></tr>
+    <tr><td>Medio ambiente</td><td>Un objetivo de ocho</td><td>En muchos objetivos</td></tr>
+    <tr><td>Empresas</td><td>Secundario</td><td>Agente explícito (creatividad e innovación)</td></tr>
+  </table></div>
+  <p class="small">El salto no es de número sino de enfoque. Ninguno de los dos marcos es jurídicamente vinculante.</p>
+
+  <h3>Conceptos generales</h3>
+  <div class="tbl"><table>
+    <tr><th>Principio</th><th>Significa</th></tr>
+    <tr><td>Universal</td><td>Para todos los países, también desarrollados (España presenta avances ante la ONU)</td></tr>
+    <tr><td><b>Integrada e indivisible</b></td><td>Los objetivos se influyen: <b>sinergias</b> o <b>compensaciones</b>. La idea más útil para un ingeniero</td></tr>
+    <tr><td>Sin dejar a nadie atrás</td><td>El avance medio no basta: llegar a los más vulnerables</td></tr>
+    <tr><td>Tres dimensiones</td><td>Cada objetivo combina lo económico, social y ambiental</td></tr>
+    <tr><td>Compromiso político</td><td>Resolución, no ley; se aplica mediante estrategias, normas y decisiones de cada país</td></tr>
+  </table></div>
+  <p><b>Las 5 P del preámbulo:</b> Personas · Planeta · Prosperidad · Paz · Alianzas.</p>
+  <h4>Arquitectura: 17 objetivos · 169 metas · 234 indicadores (oct-2026; revisión amplia 2025)</h4>
+  <div class="flow"><span><b>Objetivo 7</b> Energía asequible y no contaminante <small>(qué)</small></span><em>→</em><span><b>Meta 7.3</b> De aquí a 2030, duplicar la tasa mundial de mejora de la eficiencia energética <small>(cuánto y cuándo)</small></span><em>→</em><span><b>Indicador 7.3.1</b> Intensidad energética: energía primaria / PIB <small>(cómo se mide; INE: tep por millón de €)</small></span></div>
+  <p class="small">Misma lógica que un SGC: objetivo, meta con cifra y plazo, indicador con unidad.</p>
+  <details open><summary>Los 17 ODS</summary>
+    <div class="tbl"><table class="small">
+      <tr><td>1 Fin de la pobreza</td><td>2 Hambre cero</td><td>3 Salud y bienestar</td></tr>
+      <tr><td>4 Educación de calidad</td><td>5 Igualdad de género</td><td>6 Agua limpia y saneamiento</td></tr>
+      <tr><td><b>7 Energía asequible y no contaminante</b></td><td><b>8 Trabajo decente y crecimiento económico</b></td><td><b>9 Industria, innovación e infraestructura</b></td></tr>
+      <tr><td>10 Reducción de las desigualdades</td><td>11 Ciudades y comunidades sostenibles</td><td><b>12 Producción y consumo responsables</b></td></tr>
+      <tr><td><b>13 Acción por el clima</b></td><td>14 Vida submarina</td><td>15 Vida de ecosistemas terrestres</td></tr>
+      <tr><td>16 Paz, justicia e instituciones sólidas</td><td>17 Alianzas para lograr los objetivos</td><td></td></tr>
+    </table></div>
+  </details>
+
+  <h3>Agentes</h3>
+  <div class="tbl"><table>
+    <tr><th>Nivel</th><th>Agentes y función</th></tr>
+    <tr><td>Mundial</td><td><b>Asamblea General</b>: aprobó la Agenda (2015). <b>Foro Político de Alto Nivel (FPAN)</b>, bajo ECOSOC: revisa cada año los avances y recibe los exámenes nacionales voluntarios. <b>Comisión de Estadística</b>: aprueba los indicadores.</td></tr>
+    <tr><td>España</td><td>Gobierno: Plan de Acción (2018), <b>Estrategia de Desarrollo Sostenible 2030 (2021)</b>, exámenes voluntarios (2018, 2021, 2024). <b>INE</b>: publica los indicadores. CC. AA. y ayuntamientos: estrategias propias.</td></tr>
+    <tr><td>Empresas</td><td><b>Pacto Mundial de la ONU (2000)</b>: 10 principios (derechos humanos, trabajo, medio ambiente, anticorrupción). Grandes empresas informan sobre sostenibilidad.</td></tr>
+    <tr><td>Sociedad</td><td>ONG y sindicatos vigilan y reclaman; universidades forman, investigan y miden; ciudadanía consume, vota, participa.</td></tr>
+  </table></div>
+  <p class="small">R3: aprobar = Asamblea General · revisar = FPAN · planificar = Gobierno · medir = INE · decidir = empresa · vigilar = ONG.</p>
+  <h4>Cómo llega al ingeniero</h4>
+  <ul>
+    <li><b>Clientes y compras</b>: piden datos de eficiencia, emisiones, reciclabilidad.</li>
+    <li><b>Normativa</b>: Reglamento (UE) 2024/573, art. 13.9: desde 1-ene-2026 no puede ponerse en funcionamiento nueva aparamenta de MT ≤ 24 kV con gases fluorados (SF6; PCA &gt; 23.000 veces el CO2). AT 52–145 kV y ≤ 50 kA: 2028 · MT 24–52 kV: 2030 · AT &gt; 145 kV o &gt; 50 kA: 2032.</li>
+    <li><b>Financiación e información</b>: bancos valoran riesgo ambiental y social.</li>
+    <li><b>Sistemas de gestión</b>: ISO 9001 (modificación 2024) → determinar si el cambio climático es cuestión pertinente (4.1; nota en 4.2). ISO 14001 y 50001 certificables; ISO 26000 guía, no certificable.</li>
+  </ul>
+  <p><b>SDG Compass (2015)</b>, 5 pasos = PDCA: entender los ODS · definir prioridades · establecer metas · integrar en la gestión · informar y comunicar.</p>
+  <details><summary>R2 · Intensidad energética (solución)</summary>
+    <div class="tbl"><table>
+      <tr><th>Año</th><th class="n">MWh</th><th class="n">M€</th><th class="n">MWh/M€</th><th class="n">Mejora</th><th>Meta 6 %</th></tr>
+      <tr><td>2023</td><td class="n">2.400</td><td class="n">15,0</td><td class="n">160,0</td><td class="n">—</td><td>—</td></tr>
+      <tr><td>2024</td><td class="n">2.430</td><td class="n">16,2</td><td class="n">150,0</td><td class="n">6,25 %</td><td>Sí</td></tr>
+      <tr><td>2025</td><td class="n">2.460</td><td class="n">17,4</td><td class="n">141,4</td><td class="n">5,75 %</td><td>No</td></tr>
+    </table></div>
+    <p class="small">La media (6,0 %) esconde el incumplimiento de 2025. Desacoplamiento <b>relativo</b> sí (intensidad −11,6 %); <b>absoluto</b> no (energía +2,5 %). Al clima le importan las emisiones totales.</p>
+  </details>
+  <details><summary>Reflexión · automatizar el cableado (−20 % energía, −60 % defectos, −10 puestos)</summary>
+    <ul class="small"><li>Ayuda: 7, 9, 12, 13. Puede perjudicar: 8 (empleo) y 10 (si los afectados son vulnerables).</li><li>Agentes: plantilla y sindicatos (empleo, formación), clientes (calidad, plazo, datos ambientales), ayuntamiento (empleo comarcal), dirección (rentabilidad, retorno).</li><li>Condición: plan de recolocación y formación. Indicador: % de afectados recolocados o formados a los 12 meses; kWh por cuadro; defectos por cada 100 cuadros.</li></ul>
+  </details>
+  <div class="key"><b>Debate R4 (¿marketing?):</b> sirven si se gestionan como cualquier objetivo de calidad: priorizar los ODS en los que la empresa influye, metas medibles, responsables y revisión con datos (PDCA). Iconos sin metas = lavado de imagen.</div>
+  <div class="trap"><b>Trampas cap. 10:</b> 8/21 = ODM; 17/169 = ODS; 234 = indicadores (no metas) · ODS decididos en Río+20 (2012), aprobados en NY (2015) · FPAN revisa (no el Consejo de Seguridad ni la Comisión Europea) · indicador 7.3.1 mide eficiencia, no renovables ni emisiones · la Agenda no obliga a informar de los 17.</div>
+</section>
+
+<!-- ============ CHULETA ============ -->
+<section class="view" id="v-chuleta">
+  <h2>Chuleta: fórmulas, cifras y fechas</h2>
+  <h3>Fórmulas</h3>
+  <div class="tbl"><table>
+    <tr><th>Qué</th><th>Fórmula</th><th>Error típico (distractor)</th></tr>
+    <tr><td>Rendimiento a la primera</td><td class="formula" style="white-space:normal">(ensayados − fallos) / ensayados × 100</td><td>fallos / aprobados; tasa de fallo; ensayados / aprobados</td></tr>
+    <tr><td>Reproceso por cuadro</td><td class="formula" style="white-space:normal">horas reproceso / cuadros ensayados</td><td>dividir entre reprocesados (eso es por cuadro reprocesado)</td></tr>
+    <tr><td>Máx. fallos con meta RP</td><td class="formula" style="white-space:normal">ensayados × (1 − meta)</td><td>—</td></tr>
+    <tr><td>Importancia técnica (QFD)</td><td class="formula" style="white-space:normal">IT_j = Σ imp_i × r_ij ; % = IT / ΣIT</td><td>sumar solo relaciones; tomar el valor más alto</td></tr>
+    <tr><td>NPR (AMFE)</td><td class="formula" style="white-space:normal">G · O · D ∈ [1, 1000]</td><td>sumar; olvidar el criterio G ≥ 9</td></tr>
+    <tr><td>Brecha SERVQUAL</td><td class="formula" style="white-space:normal">Q = P − E ∈ [−6, +6]; dim = media ítems; global = media dims; ponderada = Σ (pts/100)·Q</td><td>E − P (signo); mirar solo P</td></tr>
+    <tr><td>Intensidad energética</td><td class="formula" style="white-space:normal">MWh / M€ ; mejora = (I_ant − I) / I_ant × 100</td><td>dividir entre el año nuevo; usar la variación de energía</td></tr>
+  </table></div>
+  <h3>Números y fechas</h3>
+  <div class="grid">
+    <div class="card small"><b>Cap. 7</b><br>Escala participación: 1 informar · 2 consultar · 3 implicar · 4 delegar · 5 autonomía<br>ISO 9001:2026 → 16-sep-2026<br>PDCA: Shewhart → Deming</div>
+    <div class="card small"><b>QFD</b><br>Akao 1966 · Mitsubishi Kobe 1972 · Toyota 1977-84 (−61 %) · Hauser y Clausing 1988 (HBR) · ISO 16355-1 2021 (1.ª 2015)<br>Importancia qués 1–5 · relaciones 9-3-1 · 6 estancias · 4 fases</div>
+    <div class="card small"><b>AMFE</b><br>MIL-P-1629 1949 · Apollo años 60 · automóvil años 70 · AIAG 1993 · IEC 60812 3.ª ed. 2018 · AIAG-VDA 2019 (7 pasos, prioridad de acción)<br>Costes 1-10-100-1000 · G,O,D 1–10 · tratar si G ≥ 9</div>
+    <div class="card small"><b>Servicios</b><br>ISO 9000:2015 3.7.7 · Carlzon SAS 1981 / 1987 · Grönroos 1984 · SERVQUAL 22 ítems, 1–7 · 5 dims (4-5-4-4-5) · 100 puntos (1991) · Buttle 1996 · SERVPERF Cronin y Taylor 1992</div>
+    <div class="card small"><b>ODS</b><br>1972 Estocolmo (PNUMA) · 1987 Brundtland · 1992 Río (Agenda 21, &gt;178) · 2000 ODM (8/21) · 2002 Johannesburgo · 2012 Río+20 · 2015 Agenda 2030 (17/169, 193 Estados, 25-sep) · en vigor 1-ene-2016 · 234 indicadores · Pacto Mundial 2000 (10 principios) · EDS España 2021 · SDG Compass 2015 · SF6 MT ≤ 24 kV 2026</div>
+  </div>
+  <h3>Pares que el examen confunde</h3>
+  <div class="tbl"><table>
+    <tr><th>A</th><th>B</th><th>Clave para distinguir</th></tr>
+    <tr><td>Indicador de proceso</td><td>Indicador de resultado</td><td>Anticipa (durante) vs confirma lo que recibe el cliente (tarde)</td></tr>
+    <tr><td>Administrar</td><td>Liderar</td><td>Cumplir lo previsto vs fijar dirección y comprometer</td></tr>
+    <tr><td>Verificar (C)</td><td>Actuar (A)</td><td>Comparar con el objetivo vs estandarizar y extender</td></tr>
+    <tr><td>Qué</td><td>Cómo</td><td>Necesidad en palabras del cliente vs magnitud con unidad y sentido</td></tr>
+    <tr><td>Cómo</td><td>Solución</td><td>«Energía (Wh)» vs «batería de litio»</td></tr>
+    <tr><td>Matriz de relaciones</td><td>Tejado</td><td>Cómo–qué (cuánto ayuda) vs cómo–cómo (sinergia/conflicto)</td></tr>
+    <tr><td>AMFE diseño</td><td>AMFE proceso</td><td>Falla en uso aunque se fabrique según plano vs el proceso fabrica mal</td></tr>
+    <tr><td>Modo</td><td>Efecto / Causa</td><td>Lo ve el ingeniero / lo sufre el cliente / lo corrige el proceso</td></tr>
+    <tr><td>Calidad técnica</td><td>Calidad funcional</td><td>Qué recibe vs cómo lo recibe (solo preguntando)</td></tr>
+    <tr><td>Brecha 2</td><td>Brecha 3</td><td>No hay estándar vs hay estándar pero no se cumple</td></tr>
+    <tr><td>Brecha 1</td><td>Brecha 4</td><td>No sabemos qué espera vs prometemos más de lo que damos</td></tr>
+    <tr><td>ODM</td><td>ODS</td><td>8/21, países en desarrollo vs 17/169, universales</td></tr>
+  </table></div>
+</section>
+
+<!-- ============ TEST ============ -->
+<section class="view" id="v-test">
+  <h2>Test</h2>
+  <div class="card no-print" id="testSetup">
+    <div><b>Temas</b></div>
+    <div class="chips" id="chapChips"></div>
+    <div class="row">
+      <label class="chk"><input type="checkbox" id="onlyProf"> Solo preguntas del profesor</label>
+      <label class="chk"><input type="checkbox" id="onlyFailed"> Solo falladas (pendientes)</label>
+    </div>
+    <div class="row">
+      <b>Modo</b>
+      <label class="chk"><input type="radio" name="mode" value="practica" checked> Práctica (corrige al momento)</label>
+      <label class="chk"><input type="radio" name="mode" value="simulacro"> Simulacro (corrige al final)</label>
+    </div>
+    <div class="row">
+      <label>N.º de preguntas <select id="nq"><option>10</option><option selected>20</option><option>30</option><option>40</option><option value="0">Todas</option></select></label>
+      <label class="chk"><input type="checkbox" id="penal"> Penalizar errores (−1/3)</label>
+    </div>
+    <div class="row">
+      <button class="primary" id="startBtn">Empezar</button>
+      <span class="muted small" id="poolInfo"></span>
+      <button id="resetBtn" class="small">Borrar progreso</button>
+    </div>
+  </div>
+  <div id="scoreBar" class="sticky-score hidden"></div>
+  <div id="quiz"></div>
+  <div id="quizEnd" class="row hidden"><button class="primary" id="finishBtn">Corregir simulacro</button></div>
+</section>
+</main>
+
+<script>
+/* Banco de preguntas. o[0] es siempre la correcta; se barajan al mostrar.
+   p:1 = pregunta literal de los cuestionarios del profesor. */
+const Q = [
+/* ---------- CAP 7 ---------- */
+{id:"7p1",c:"7",p:1,q:"El propietario de un proceso es:",o:["La persona que responde de que el proceso logre sus resultados, lo mide y lo mejora.","La persona de mayor rango jerárquico entre las que intervienen.","El departamento de calidad, que documenta todos los procesos.","El cliente que recibe la salida del proceso."],e:"Responde del resultado y de la mejora aunque quienes intervienen dependan de otros jefes. Confundirlo con el de mayor rango es confundir propiedad con jerarquía; con calidad, confundirlo con la función de calidad."},
+{id:"7p2",c:"7",p:1,q:"¿Cuál de estos es un indicador de resultado del proceso de entrega de pedidos?",o:["Porcentaje de pedidos entregados completos y en la fecha comprometida.","Horas de reproceso por cuadro ensayado.","Tiempo medio de montaje por cuadro.","Porcentaje de operarios formados en el nuevo procedimiento."],e:"Mide lo que recibe el cliente. Reproceso y tiempo de montaje miden el funcionamiento interno (de proceso); % formados mide un recurso."},
+{id:"7p3",c:"7",p:1,q:"En una fábrica de cuadros eléctricos, la calibración de los equipos del banco de ensayo es un proceso:",o:["De apoyo, porque proporciona un recurso fiable a los procesos operativos.","Estratégico, porque sin él la empresa no puede certificarse.","Operativo, porque interviene en el ensayo del producto.","No es un proceso, sino una tarea del departamento de calidad."],e:"Aporta un recurso (equipos fiables). Que sea crítica para el ensayo no la convierte en operativa: no transforma el pedido en producto."},
+{id:"7p4",c:"7",p:1,q:"Un taller ensaya 250 motores rebobinados en un mes y 20 no superan el ensayo a la primera. Su rendimiento a la primera es:",o:["92,0 %","91,3 %","8,0 %","108,7 %"],e:"(250 − 20)/250 = 230/250 = 92,0 %. 91,3 % sale de dividir fallos entre aprobados (20/230); 8,0 % es la tasa de fallo."},
+{id:"7p5",c:"7",p:1,q:"En el ciclo PDCA, la fase de verificar (C) consiste en:",o:["Comparar los resultados medidos con el objetivo fijado al planificar.","Revisar que el plan está bien redactado antes de ejecutarlo.","Inspeccionar el 100 % de las piezas producidas durante la prueba.","Estandarizar la solución y extenderla al resto de la planta."],e:"Verificar = comparar lo medido con el objetivo de P. Estandarizar es la fase A; inspeccionar el producto no es verificar el ciclo."},
+{id:"7p6",c:"7",p:1,q:"¿Qué afirmación describe mejor la diferencia entre administrar y liderar?",o:["Administrar asegura que se cumpla lo previsto; liderar fija la dirección y compromete a las personas con el cambio.","Administrar es propio de los mandos intermedios; liderar, solo de la alta dirección.","Liderar consiste en motivar; administrar, en sancionar los incumplimientos.","Son sinónimos en el contexto del TQM."],e:"Ambas se ejercen en todos los niveles, no solo en la alta dirección. No son excluyentes."},
+{id:"7p7",c:"7",p:1,q:"La empresa se fija «entregas en plazo ≥ 95 %». Un objetivo del taller de montaje está bien desplegado cuando:",o:["Contribuye de forma medible al de la empresa y depende de lo que el taller puede controlar.","Es el mismo objetivo, copiado en todos los niveles.","Lo fija la dirección sin consultar al taller, para evitar metas poco ambiciosas.","Se expresa de forma cualitativa para dar flexibilidad."],e:"Copiarlo no dice qué hacer; imponerlo sin consulta rompe el compromiso; cualitativo no se puede verificar."},
+{id:"7p8",c:"7",p:1,q:"Un operario detecta un defecto recurrente, pero no lo comunica porque la última vez se le culpó del retraso. Es un ejemplo de:",o:["Una barrera a la participación creada por el propio sistema: el miedo.","Falta de formación técnica del operario.","Un requisito latente del cliente no captado.","Un fallo del enfoque funcional."],e:"El operario sabe, pero al sistema no le compensa que lo diga. Deming: eliminar el miedo."},
+{id:"7n1",c:"7",q:"Según el capítulo, un proceso es:",o:["Un conjunto de actividades relacionadas que transforma entradas en salidas con valor para un cliente, usando recursos y bajo condiciones de control.","El conjunto de tareas que realiza un departamento de la empresa.","Una secuencia de operaciones de fabricación sobre el producto físico.","El documento que describe cómo se debe hacer un trabajo."],e:"Definición literal. Todo proceso tiene un cliente (aunque sea interno), principio y fin, y un resultado medible."},
+{id:"7n2",c:"7",q:"En el enfoque funcional, ¿dónde se pierden los problemas?",o:["En las fronteras entre departamentos.","Dentro del departamento de calidad.","En el proveedor externo.","En la alta dirección."],e:"Cada departamento optimiza su tramo (óptimo local) y nadie responde de extremo a extremo."},
+{id:"7n3",c:"7",q:"El enfoque a procesos busca principalmente:",o:["El óptimo global: el resultado que recibe el cliente al final.","El óptimo local de cada departamento.","Reducir el número de departamentos del organigrama.","Que cada área mida su propia productividad."],e:"Pregunta guía: ¿qué recibe el cliente al final? El funcional pregunta ¿qué hace mi departamento?"},
+{id:"7n4",c:"7",q:"«Empieza con la orden de fabricación liberada y termina al entregar el cuadro a expedición». En la anatomía del proceso esto son:",o:["Los límites del proceso.","Las interfaces del proceso.","Los controles del proceso.","Las entradas del proceso."],e:"Límites = principio y fin. Interfaces = de quién recibe y a quién entrega (ingeniería, compras → expedición)."},
+{id:"7n5",c:"7",q:"La revisión por la dirección es un proceso:",o:["Estratégico.","Operativo.","De apoyo.","Auxiliar de calidad, fuera del mapa de procesos."],e:"Estratégicos: fijan la dirección, objetivos y recursos (planificación estratégica, revisión por la dirección, fijación de objetivos anuales)."},
+{id:"7n6",c:"7",q:"En una empresa cuyo negocio es prestar servicios de mantenimiento eléctrico, el mantenimiento eléctrico es un proceso:",o:["Operativo, porque es lo que recibe el cliente.","De apoyo, como en cualquier empresa.","Estratégico, porque define el negocio.","De apoyo, porque no fabrica producto físico."],e:"La clasificación depende de la organización: de apoyo en una fábrica de cuadros, operativo en una empresa de mantenimiento."},
+{id:"7n7",c:"7",q:"En la conservera, la esterilización en autoclave y la recepción de pescado son procesos:",o:["Operativos.","De apoyo.","Estratégicos.","Uno operativo y otro de apoyo."],e:"Ambos transforman la materia prima en el producto que recibe el cliente. Mantenimiento de autoclaves y calibración de sondas son de apoyo."},
+{id:"7n8",c:"7",q:"¿Cuál de estas afirmaciones sobre el propietario del proceso es FALSA?",o:["Debe ser el jefe jerárquico de todas las personas que intervienen.","Fija los indicadores del proceso y hace su seguimiento.","Coordina las interfaces con los procesos vecinos.","Responde del resultado del proceso ante la dirección."],e:"No tiene por qué ser el jefe jerárquico de todos, ni hace todo el trabajo, ni es el departamento de calidad."},
+{id:"7n9",c:"7",q:"Un indicador de proceso se caracteriza porque:",o:["Mide el proceso mientras ocurre y permite actuar antes de que el resultado llegue al cliente.","Confirma si se ha cumplido el objetivo una vez entregado el producto.","Mide la satisfacción del cliente final.","Solo puede calcularse a final de año."],e:"De proceso: «¿se va a llegar?», anticipa. De resultado: «¿se ha llegado?», confirma pero llega tarde."},
+{id:"7n10",c:"7",q:"Según el capítulo, «un indicador sin meta es…»:",o:["Un dato.","Un objetivo.","Un deseo.","Un indicador de proceso."],e:"«Un indicador sin meta es un dato; sin responsable, un dato que nadie mira.» «Un objetivo sin recursos es un deseo» es otra frase (liderazgo)."},
+{id:"7n11",c:"7",q:"¿Cuál de estos elementos NO forma parte de la ficha mínima de un indicador?",o:["Coste de implantación del indicador.","Fórmula y unidad.","Fuente del dato y frecuencia.","Meta y responsable."],e:"Ficha mínima: fórmula, unidad, fuente del dato, frecuencia, meta y responsable."},
+{id:"7n12",c:"7",q:"Un taller ensaya 400 cuadros y 30 no superan el ensayo a la primera. Su rendimiento a la primera es:",o:["92,5 %","7,5 %","91,9 %","108,1 %"],e:"(400 − 30)/400 = 370/400 = 92,5 %. 7,5 % = tasa de fallo; 91,9 % sale de 30/370; 108,1 % = 400/370."},
+{id:"7n13",c:"7",q:"Se ensayan 200 cuadros y se dedican 70 h a reprocesos. Las horas de reproceso por cuadro ensayado son:",o:["0,35 h (21 min)","2,86 h","3,5 h","35 h"],e:"70/200 = 0,35 h por cuadro ensayado. Dividir entre los cuadros reprocesados daría horas por cuadro reprocesado, otro indicador."},
+{id:"7n14",c:"7",q:"Con 240 cuadros ensayados y una meta de rendimiento a la primera ≥ 95 %, ¿cuántos cuadros como máximo pueden no superar el ensayo?",o:["12","5","13","24"],e:"240 × (1 − 0,95) = 12. Ej. del temario: con 180 cuadros, máximo 9."},
+{id:"7n15",c:"7",q:"De 80 pedidos entregados, 72 llegan en la fecha comprometida. El indicador vale y es de tipo:",o:["90 %, de resultado.","90 %, de proceso.","111 %, de resultado.","10 %, de proceso."],e:"72/80 = 90 %. Mide lo que ve el cliente: de resultado."},
+{id:"7n16",c:"7",q:"En el cálculo guiado del taller, el reproceso aparece como causa de los retrasos. La conclusión correcta es:",o:["Es una causa plausible, pero hipótesis: hay que cruzar los pedidos retrasados con los cuadros reprocesados.","Está demostrado que el reproceso causa los retrasos.","El reproceso no influye en las entregas porque es un indicador de proceso.","Hay que sustituir el indicador de entregas por el de reproceso."],e:"Decisiones basadas en evidencias: el reproceso consume capacidad, pero hay que comprobarlo con datos."},
+{id:"7n17",c:"7",q:"El ciclo PDCA se conoce también como ciclo de:",o:["Shewhart, difundido por Deming.","Juran, difundido por Ishikawa.","Deming, difundido por Crosby.","Kano, difundido por Akao."],e:"Ciclo de Shewhart, difundido por Deming."},
+{id:"7n18",c:"7",q:"En el PDCA, la estandarización actúa como una «cuña» porque:",o:["Impide que el proceso vuelva al nivel anterior antes de empezar la vuelta siguiente.","Acelera la fase de planificación.","Permite saltarse la fase de verificación.","Sustituye a los indicadores de proceso."],e:"Se estandariza en la fase A (actuar)."},
+{id:"7n19",c:"7",q:"En la fase D (hacer) del PDCA, la solución se aplica:",o:["A pequeña escala, con las personas que ejecutan el proceso, registrando lo que ocurre.","A toda la planta a la vez, para ganar tiempo.","Solo por el departamento de calidad.","Después de estandarizarla."],e:"Ej.: hoja de verificación en una de las dos líneas durante un mes."},
+{id:"7n20",c:"7",q:"«Sin la fase C, el PDCA se queda en hacer cosas.» ¿Qué hace falta antes de empezar para poder verificar?",o:["Un indicador definido antes de empezar.","Un auditor externo.","La aprobación del cliente.","Un presupuesto anual."],e:"Sin un indicador definido antes de empezar, no hay nada con qué verificar."},
+{id:"7n21",c:"7",q:"«La calidad no se delega; se delega…»:",o:["Su coordinación.","Su medición.","Su responsabilidad.","Su planificación."],e:"La dirección no delega la calidad; delega su coordinación."},
+{id:"7n22",c:"7",q:"«Un objetivo sin recursos es un deseo» se refiere a la función de la dirección de:",o:["Poner los recursos.","Definir el propósito.","Dar ejemplo.","Revisar y decidir."],e:"Funciones: propósito, objetivos, recursos, ejemplo, revisar y decidir."},
+{id:"7n23",c:"7",q:"Decidir no expedir, parar la línea o invertir en prevención cuando la calidad cuesta dinero corresponde a:",o:["Dar ejemplo.","Fijar objetivos.","Definir el propósito.","Delegar la coordinación."],e:"Dar ejemplo: decidir con coherencia cuando la calidad cuesta."},
+{id:"7n24",c:"7",q:"¿Qué refuerza la ISO 9001:2026, publicada el 16 de septiembre de 2026?",o:["El papel del liderazgo y de la cultura de la calidad.","La obligación de usar el QFD.","La sustitución del PDCA por el AMFE.","La eliminación de los indicadores de proceso."],e:"Refuerza el liderazgo y la cultura de la calidad (y el comportamiento ético, cap. 10)."},
+{id:"7n25",c:"7",q:"Ante una desviación, quien lidera (frente a quien administra):",o:["Se pregunta qué la produce en el sistema.","La corrige para volver al plan.","Sanciona al responsable.","Cambia el objetivo para que no haya desviación."],e:"Administrar: corregir para volver al plan. Liderar: buscar qué la produce en el sistema."},
+{id:"7n26",c:"7",q:"En el despliegue de objetivos en cascada:",o:["El «cómo» de cada nivel se convierte en el «qué» del nivel siguiente.","El «qué» de cada nivel es idéntico en todos los niveles.","Los objetivos los fija el equipo y la dirección los acepta.","Solo se despliegan los objetivos de producción."],e:"La misma lógica que el QFD: el cómo de una fase es el qué de la siguiente. Los objetivos se negocian entre niveles."},
+{id:"7n27",c:"7",q:"En la escala de participación, el autocontrol (el operario verifica y registra su propio trabajo) corresponde al nivel:",o:["Delegar (4).","Implicar (3).","Consultar (2).","Autonomía (5)."],e:"1 informar · 2 consultar · 3 implicar (equipos de mejora) · 4 delegar (autocontrol) · 5 autonomía (retener o parar)."},
+{id:"7n28",c:"7",q:"Poder retener el producto o parar la línea al detectar un defecto corresponde al nivel de participación:",o:["Autonomía.","Delegar.","Implicar.","Informar."],e:"Es el nivel máximo (5)."},
+{id:"7n29",c:"7",q:"Participar en equipos de mejora y círculos de calidad corresponde al nivel:",o:["Implicar.","Consultar.","Delegar.","Informar."],e:"Nivel 3."},
+{id:"7n30",c:"7",q:"El principio 3 del TQM, base de la participación del personal, dice que:",o:["Quien opera el proceso es quien mejor lo conoce.","La calidad es responsabilidad exclusiva de la dirección.","El cliente define la calidad.","La inspección final garantiza la calidad."],e:"Participar no es opinar de todo: es tener información, cauce y autoridad sobre el propio trabajo."},
+{id:"7n31",c:"7",q:"«La gente deja de proponer mejoras.» ¿Qué barrera describe y cómo se combate?",o:["Sugerencias sin respuesta: responder siempre, en plazo y explicando la decisión.","Miedo a la culpa: tratar el error como fallo del sistema.","Falta de tiempo: reservar tiempo en la jornada.","Objetivos contradictorios: equilibrar indicadores."],e:"Cada barrera tiene su síntoma y su acción."},
+{id:"7n32",c:"7",q:"«Se dice calidad primero y se premia lo contrario.» Es la barrera de:",o:["Incoherencia de la dirección.","Objetivos contradictorios.","Miedo a la culpa.","Falta de formación."],e:"Acción: dar ejemplo en las decisiones que cuestan dinero."},
+{id:"7n33",c:"7",q:"En la conservera todos los departamentos presentan indicadores en verde y el cliente recibe solo el 78 % de pedidos completos y en plazo. La causa de fondo es:",o:["Se miden las funciones, no el proceso: nadie gestiona el proceso del pedido a la entrega.","El cliente exige un objetivo imposible.","Los indicadores departamentales están mal calculados.","Falta un indicador más en cada departamento."],e:"Añadir indicadores departamentales no lo arregla: hace falta uno de extremo a extremo con un propietario."},
+{id:"7n34",c:"7",q:"En el caso del lote del viernes (pintura por debajo de especificación), la regla que debería fijar la dirección es:",o:["Cualquiera que detecte una no conformidad puede retener; solo quien designe la dirección puede liberar, con registro y, si no cumple, con autorización del cliente.","Solo el jefe de turno puede detener una expedición.","Si el cliente nunca ha reclamado, se puede expedir.","El operario decide en solitario si expide o no."],e:"Separar retener (cualquiera) de liberar (designado, con registro y concesión del cliente)."},
+{id:"7n35",c:"7",q:"Que un cliente nunca haya reclamado por un defecto:",o:["No autoriza a entregar fuera de especificación.","Autoriza a relajar la especificación.","Convierte el defecto en requisito latente.","Permite liberar el lote sin registro."],e:"Hay que documentar, proponer, acordar con el cliente y solo entonces cambiar el criterio."},
+{id:"7n36",c:"7",q:"«Montaje rechaza piezas de mecanizado que cumplen el plano pero no entran en su utillaje.» Concepto:",o:["Cliente interno y sus requisitos.","Requisito latente del cliente final.","Modelo de Kano.","Enfoque funcional."],e:"Montaje es cliente interno de mecanizado. En la cascada del QFD, cada fase es cliente de la anterior."},
+{id:"7n37",c:"7",q:"«Hace diez años nadie pedía un cargador pequeño; hoy nadie compraría uno grande.» Concepto:",o:["Modelo de Kano: un requisito atractivo que se ha vuelto obligatorio.","Requisito explícito.","Cliente interno.","Calidad funcional."],e:"Los obligatorios casi nunca salen en las entrevistas: hay que añadirlos."},
+{id:"7n38",c:"7",q:"Un cliente devuelve un producto que cumple todas las cotas y ensayos del pliego. Es un caso de:",o:["Conforme pero insatisfecho: la especificación no recogía un requisito implícito o latente.","Producto no conforme.","Error de medición.","Brecha 4 de comunicación."],e:"El QFD busca que la especificación nazca de lo que el cliente necesita."},
+
+/* ---------- CAP 8 QFD ---------- */
+{id:"8a1",c:"8a",q:"El QFD es:",o:["Un método estructurado que traduce los requisitos del cliente en características técnicas y, en cascada, en características de componentes, parámetros de proceso y controles.","Una norma obligatoria para certificar el diseño de productos.","Un método para calcular el riesgo de los modos de fallo.","Un cuestionario para medir la calidad percibida."],e:"El riesgo de fallos es el AMFE; el cuestionario, SERVQUAL. Ninguna norma obliga a usar el QFD."},
+{id:"8a2",c:"8a",q:"¿Quién planteó el despliegue de la calidad en Japón en 1966?",o:["Yoji Akao.","Noriaki Kano.","Kaoru Ishikawa.","Genichi Taguchi."],e:"Akao, 1966. Primera tabla: astillero Mitsubishi Heavy Industries en Kobe, 1972."},
+{id:"8a3",c:"8a",q:"«The House of Quality» se publicó en Harvard Business Review en 1988 por:",o:["Hauser y Clausing.","Parasuraman, Zeithaml y Berry.","Cronin y Taylor.","Shewhart y Deming."],e:"Parasuraman, Zeithaml y Berry = brechas/SERVQUAL; Cronin y Taylor = SERVPERF."},
+{id:"8a4",c:"8a",q:"Al aplicar el QFD a sus furgonetas (1977-1984), Toyota redujo los costes de arranque de producción en:",o:["61 %","16 %","50 %","90 %"],e:"Dato del temario: −61 %."},
+{id:"8a5",c:"8a",q:"Sobre la obligatoriedad del QFD:",o:["Ninguna norma obliga a usarlo; la serie ISO 16355 describe cómo aplicarlo.","La ISO 9001 obliga a usarlo en el diseño.","La ISO 16355 lo hace obligatorio desde 2021.","Es obligatorio en la industria del automóvil."],e:"Herramienta de planificación, no obligación legal. ISO 16355-1 (2021; 1.ª ed. 2015)."},
+{id:"8a6",c:"8a",q:"¿Cuál de estos es un «cómo» correctamente formulado?",o:["Energía de la batería (Wh) ↑","Batería de litio.","Motor sin escobillas.","Buena batería."],e:"Un cómo es una magnitud medible, con unidad y sentido de mejora, independiente de la solución. Litio y sin escobillas son soluciones; «buena batería», cómo sin unidad."},
+{id:"8a7",c:"8a",q:"¿Cuál de estos es un «qué» correctamente formulado?",o:["Que no se quede sin fuerza al atornillar en perfil metálico.","Que tenga motor sin escobillas.","Par de apriete ≥ 60 N·m.","Que tenga una batería de 5 Ah."],e:"Un qué no contiene ninguna solución y está en el lenguaje del cliente. «≥ 60 N·m» es un valor objetivo de un cómo."},
+{id:"8a8",c:"8a",q:"La importancia de cada «qué» en la casa de la calidad:",o:["Se puntúa de 1 a 5 y la pone el cliente.","Se puntúa con 9, 3 o 1 y la pone ingeniería.","La fija la dirección según la estrategia.","Se calcula como Σ importancia × relación."],e:"1–5, por encuesta o comparación de pares, la pone el cliente, no la empresa. 9-3-1 es la matriz de relaciones; Σ imp × rel es la importancia técnica."},
+{id:"8a9",c:"8a",q:"Si una frase del cliente contiene una solución («que tenga app»), hay que:",o:["Preguntar «¿para qué?» hasta llegar a la necesidad.","Incorporarla tal cual como qué.","Convertirla directamente en un cómo.","Descartarla."],e:"«App» → ¿para qué? → cargar en las horas baratas sin estar pendiente."},
+{id:"8a10",c:"8a",q:"En la voz del cliente, el diagrama de afinidad se usa en el paso de:",o:["Agrupar.","Recoger.","Ponderar.","Completar."],e:"Recoger → traducir → agrupar (afinidad, árbol) → ponderar → completar (Kano)."},
+{id:"8a11",c:"8a",q:"El último paso de la voz del cliente, «completar», consiste en:",o:["Añadir lo que nadie dice: requisitos obligatorios, legales y de seguridad (Kano).","Rellenar la matriz de relaciones.","Calcular la importancia relativa.","Añadir los valores objetivo."],e:"Los obligatorios no salen en las entrevistas."},
+{id:"8a12",c:"8a",q:"En el caso del punto de recarga, la frase «que tenga 22 kW, que es lo más rápido» es:",o:["Una solución; la necesidad es tener el coche cargado por la mañana.","Un qué válido con importancia 5.","Un cómo con su valor objetivo.","Un requisito obligatorio."],e:"La frase más llamativa de las entrevistas era una solución. Al final, 7,4 kW monofásica bastaba."},
+{id:"8a13",c:"8a",q:"La seguridad eléctrica del punto de recarga (REBT, ITC-BT-52):",o:["Es un requisito obligatorio: no compite en la priorización, se cumple siempre.","Es el qué de mayor importancia de la casa.","Debe aparecer en las entrevistas con importancia 5.","Es un cómo de la matriz."],e:"No entra en la casa: es una restricción que se cumple siempre."},
+{id:"8a14",c:"8a",q:"«Que no me obligue a subir la potencia contratada» es:",o:["Una necesidad de coste expresada como condición: válida como qué.","Una solución disfrazada que hay que reformular.","Un cómo medible.","Un requisito legal."],e:"No contiene ninguna solución técnica."},
+{id:"8a15",c:"8a",q:"En la casa de la calidad, la estancia «evaluación competitiva» responde a:",o:["¿Cómo nos ve el cliente frente a la competencia?","¿Qué cómos se ayudan entre sí?","¿Cuánto contribuye cada cómo a cada qué?","¿Qué valor objetivo fijamos?"],e:"Las seis: qués e importancia, evaluación competitiva, cómos, matriz de relaciones, tejado, importancia técnica y valores objetivo."},
+{id:"8a16",c:"8a",q:"¿En qué orden se construye la casa de la calidad?",o:["Primero el cliente (qués y evaluación competitiva), después la ingeniería (cómos, relaciones, tejado) y al final la decisión (importancia técnica y valores objetivo).","Primero los cómos, después los qués y al final el tejado.","Primero el tejado, después la matriz y al final los qués.","Primero los valores objetivo y después la voz del cliente."],e:"1–2 cliente, 3–5 ingeniería, 6 decisión."},
+{id:"8a17",c:"8a",q:"En la matriz de relaciones se usan los valores:",o:["9 (fuerte), 3 (media), 1 (débil) y vacío (sin relación).","5, 3 y 1.","10, 5 y 1.","+, − y 0."],e:"+ / − son del tejado; 1–5 es la importancia de los qués."},
+{id:"8a18",c:"8a",q:"Una fila vacía en la matriz de relaciones indica:",o:["Un qué que no atiende ninguna característica: falta un cómo.","Un cómo que nadie ha pedido.","Que la matriz no discrimina.","Que el qué es un requisito obligatorio."],e:"Columna vacía = cómo que nadie pidió (¿sobra o falta un obligatorio?)."},
+{id:"8a19",c:"8a",q:"Una columna vacía en la matriz de relaciones indica:",o:["Un cómo que nadie ha pedido: o sobra o responde a un requisito obligatorio que falta.","Un qué que no atiende ninguna característica.","Que la casa no prioriza nada.","Que hay un conflicto en el tejado."],e:"Fila vacía = falta un cómo."},
+{id:"8a20",c:"8a",q:"Una matriz de relaciones llena de nueves:",o:["No discrimina: si todo es muy importante, nada lo es.","Indica un producto excelente.","Es la situación ideal de la casa.","Indica que falta un cómo."],e:"Error frecuente del QFD."},
+{id:"8a21",c:"8a",q:"Una matriz con «diagonal perfecta» (cada qué con su cómo y nada más):",o:["No prioriza nada.","Es la casa ideal.","Indica conflictos en el tejado.","Indica que faltan qués."],e:"Cuatro diagnósticos: fila vacía, columna vacía, llena de nueves, diagonal perfecta."},
+{id:"8a22",c:"8a",q:"Según el convenio de la asignatura, si mejorar un cómo perjudica a un qué:",o:["En la matriz solo se anota cuánto ayuda; los efectos en contra se recogen en el tejado.","Se anota −9 en la matriz.","Se elimina el cómo.","Se baja la importancia del qué."],e:"La matriz mide ayuda; el tejado, sinergias y conflictos entre cómos."},
+{id:"8a23",c:"8a",q:"Un cómo tiene relación 3 con un qué de importancia 5, relación 9 con un qué de importancia 4 y relación 1 con un qué de importancia 2. Su importancia técnica absoluta es:",o:["53","13","11","59"],e:"5×3 + 4×9 + 2×1 = 15 + 36 + 2 = 53. 13 = suma de relaciones; 11 = suma de importancias."},
+{id:"8a24",c:"8a",q:"En el taladro, la energía tiene IT = 45 y la suma de IT de todos los cómos es 201. Su importancia relativa es:",o:["22,4 %","45 %","4,5 %","19,4 %"],e:"45/201 × 100 = 22,4 %. 19,4 % es la de la masa (39/201)."},
+{id:"8a25",c:"8a",q:"En el taladro, el rendimiento del motor no tiene ningún 9 y aun así supera a «caída sin daño». ¿Por qué?",o:["Contribuye a tres qués; la prioridad la da la suma ponderada, no la relación más fuerte.","Porque su sentido de mejora es ↑.","Porque tiene menor coste.","Porque está en conflicto con la masa."],e:"5×3 + 4×1 + 4×3 = 31 > 3×9 = 27."},
+{id:"8a26",c:"8a",q:"En el punto de recarga, la gestión dinámica de potencia (31 %) supera a la potencia de carga (23 %) porque:",o:["Atiende a tres qués a la vez.","Es lo que más pidieron los clientes literalmente.","Tiene la relación 9 con el qué más importante.","Es un requisito obligatorio."],e:"La frase más llamativa («22 kW») no era la prioridad técnica."},
+{id:"8a27",c:"8a",q:"El tejado de la casa de la calidad recoge:",o:["Las correlaciones entre cómos: sinergias (+) y conflictos (−).","Las relaciones entre qués y cómos.","La evaluación de la competencia.","La importancia de los qués."],e:"Pregunta: ¿qué cómos se ayudan entre sí y cuáles se estorban?"},
+{id:"8a28",c:"8a",q:"La energía de la batería (↑) y la masa (↓) crecen juntas físicamente. En el tejado su relación es:",o:["Conflicto fuerte (−−), porque se lee respecto al sentido de mejora.","Sinergia fuerte (++), porque crecen juntas.","Sin relación.","Sinergia débil (+)."],e:"Mejorar la energía (más Wh) empeora la masa (más kg). Leer por la magnitud y no por el sentido de mejora es un error frecuente."},
+{id:"8a29",c:"8a",q:"Ante el conflicto energía–masa, usar celdas de mayor densidad energética es una salida de:",o:["Innovación.","Compromiso.","Prioridad.","Despliegue."],e:"Compromiso = valor equilibrado (90 Wh sin pasar de 1,8 kg). Prioridad = manda el cómo de mayor IT."},
+{id:"8a30",c:"8a",q:"Si un conflicto del tejado no tiene salida por compromiso ni por innovación:",o:["Manda el cómo con más importancia técnica.","Se elimina el qué de menor importancia.","Se ignora el conflicto.","Se repite la encuesta a los clientes."],e:"Los conflictos se resuelven con compromiso, innovación o prioridad, nunca ignorándolos."},
+{id:"8a31",c:"8a",q:"En el despliegue en cascada del QFD:",o:["El cómo de cada fase es el qué de la siguiente.","Cada fase usa los mismos qués del cliente.","Solo hay una casa de la calidad.","El qué de cada fase lo fija la dirección."],e:"Cuatro casas: producto → componentes → proceso → producción."},
+{id:"8a32",c:"8a",q:"La fase 3 del QFD (planificación del proceso) traduce:",o:["Características de las piezas en parámetros del proceso.","Requisitos del cliente en características del producto.","Características del producto en características de las piezas.","Parámetros del proceso en controles e instrucciones."],e:"Fase 1: cliente → producto; 2: producto → piezas; 3: piezas → parámetros del proceso; 4: parámetros → controles."},
+{id:"8a33",c:"8a",q:"Cinco celdas de 3,6 V y 5 Ah en serie dan:",o:["90 Wh","18 Wh","25 Wh","450 Wh"],e:"5 × 3,6 V × 5 Ah = 90 Wh. Por eso «5 Ah» no es un cómo suficiente: sin la tensión no se conoce la energía."},
+{id:"8a34",c:"8a",q:"¿Qué fases del QFD son el punto de partida del AMFE de diseño y de proceso?",o:["Las fases 2 y 3.","Las fases 1 y 4.","Solo la fase 1.","Las fases 3 y 4."],e:"Fase 2 (componentes) → AMFE de diseño; fase 3 (proceso) → AMFE de proceso."},
+{id:"8a35",c:"8a",q:"¿Cuál de estos es un LÍMITE del QFD según el temario?",o:["El 9-3-1 es un juicio del equipo, no una medida.","Obliga a trabajar en equipo.","Deja escrito el porqué del diseño.","Los cambios se hacen en el papel antes de fabricar utillajes."],e:"Las otras tres son ventajas. Otros límites: laborioso (30 × 40 = 1.200 celdas), vale lo que la voz del cliente, los números orientan pero no deciden."},
+{id:"8a36",c:"8a",q:"Una casa con 30 qués y 40 cómos implica discutir:",o:["1.200 celdas","70 celdas","120 celdas","400 celdas"],e:"30 × 40 = 1.200: el QFD es laborioso."},
+{id:"8a37",c:"8a",q:"En el debate sobre IA y voz del cliente, la regla de uso es:",o:["Cada qué debe poder trazarse hasta una fuente real; si no, es una hipótesis que hay que validar.","La IA sustituye a las entrevistas si hay más de mil reseñas.","Solo se usan los qués propuestos por la IA.","Las reseñas en línea recogen bien los requisitos latentes."],e:"La IA amplía la escucha; no la sustituye. Lo latente no está escrito."},
+
+/* ---------- CAP 8 AMFE ---------- */
+{id:"8b1",c:"8b",q:"El AMFE es una herramienta de:",o:["Prevención: busca el fallo en el papel, antes de que ocurra.","Inspección final del producto.","Medición de la satisfacción del cliente.","Priorización de requisitos del cliente."],e:"Trabaja en las etapas de diseño y fabricación, donde corregir cuesta 1–10 frente a 1.000 en el cliente."},
+{id:"8b2",c:"8b",q:"Coste relativo orientativo de corregir el mismo fallo si se descubre en diseño, fabricación, inspección final y cliente:",o:["1 · 10 · 100 · 1.000","1 · 2 · 3 · 4","1 · 5 · 10 · 50","10 · 100 · 1.000 · 10.000"],e:"Crece por etapas en órdenes de magnitud."},
+{id:"8b3",c:"8b",q:"La norma militar de EE. UU. de 1949 que describe el AMFE es:",o:["MIL-P-1629","IEC 60812","ISO 16355","AIAG-VDA"],e:"IEC 60812 (3.ª ed. 2018) es la norma internacional; AIAG-VDA es el manual de automoción de 2019."},
+{id:"8b4",c:"8b",q:"El manual AIAG-VDA de 2019 introduce:",o:["Siete pasos y la prioridad de acción (alta, media o baja) en lugar del NPR.","El primer manual de AMFE de automoción.","El AMFE como norma internacional.","La casa de la calidad."],e:"El primer manual AIAG es de 1993; la norma internacional, IEC 60812 (2018)."},
+{id:"8b5",c:"8b",q:"Si al AMFE se le añade un análisis explícito de la criticidad, se denomina:",o:["AMFEC (FMECA).","QFD.","SERVPERF.","FMEA-D."],e:"AMFEC = análisis modal de fallos, efectos y criticidad."},
+{id:"8b6",c:"8b",q:"«¿Cómo puede fallar en el uso aunque se fabrique exactamente según el plano?» es la pregunta del:",o:["AMFE de diseño.","AMFE de proceso.","QFD fase 4.","SERVQUAL."],e:"El de proceso pregunta: ¿cómo puede el proceso producir algo que no cumpla el diseño?"},
+{id:"8b7",c:"8b",q:"El AMFE de proceso:",o:["Supone que el diseño es correcto y se hace antes de lanzar la producción en serie.","Supone que el proceso es correcto y analiza el diseño.","Se hace después de recibir reclamaciones.","Parte de la fase 1 del QFD."],e:"Parte de la fase 3 del QFD y del diagrama de flujo del proceso."},
+{id:"8b8",c:"8b",q:"«Soldadura por puntos con corriente insuficiente que deja una unión de alta resistencia» es un ejemplo de:",o:["AMFE de proceso.","AMFE de diseño.","Brecha de prestación.","Conflicto del tejado."],e:"El proceso fabrica mal. La pletina de sección insuficiente que se calienta es el ejemplo de diseño."},
+{id:"8b9",c:"8b",q:"El AMFE de diseño parte de:",o:["La fase 2 del QFD y el diagrama de bloques.","La fase 3 del QFD y el diagrama de flujo.","El mapa de procesos.","El cuestionario SERVQUAL."],e:"Y se hace antes de congelar el diseño."},
+{id:"8b10",c:"8b",q:"«Borne apretado por debajo del par especificado» es, en la cadena del fallo:",o:["El modo de fallo.","La causa.","El efecto.","El control de detección."],e:"Causa: destornillador sin control de par. Efecto: la conexión se calienta y provoca un disparo o daña el cuadro."},
+{id:"8b11",c:"8b",q:"«Destornillador sin control de par» es, en la cadena del fallo:",o:["La causa.","El modo de fallo.","El efecto.","El control de prevención."],e:"La causa la corrige el proceso."},
+{id:"8b12",c:"8b",q:"Según el truco del temario:",o:["El efecto lo sufre el cliente, el modo lo ve el ingeniero y la causa la corrige el proceso.","La causa la sufre el cliente, el efecto lo ve el ingeniero y el modo lo corrige el proceso.","El modo lo sufre el cliente y el efecto lo corrige el proceso.","Los tres los evalúa el cliente."],e:"Para no confundirlos."},
+{id:"8b13",c:"8b",q:"La instrucción de montaje y la inspección visual final son, respectivamente, controles de:",o:["Prevención y detección.","Detección y prevención.","Gravedad y ocurrencia.","Prevención y prevención."],e:"Prevención: previene la causa. Detección: detecta el modo o la causa."},
+{id:"8b14",c:"8b",q:"En la hoja AMFE, un modo de fallo con tres causas distintas ocupa:",o:["Tres filas.","Una fila.","Tres columnas.","Una hoja por causa."],e:"Cada fila es una cadena causa–modo–efecto."},
+{id:"8b15",c:"8b",q:"Los índices del AMFE se refieren a:",o:["Gravedad al efecto, ocurrencia a la causa y detección a los controles.","Gravedad a la causa, ocurrencia al efecto y detección al modo.","Los tres al modo de fallo.","Gravedad al cliente, ocurrencia al proveedor y detección al auditor."],e:"Clave para puntuar y para saber qué acción baja cada índice."},
+{id:"8b16",c:"8b",q:"Un índice de detección D = 10 significa:",o:["El fallo es casi imposible de detectar antes de llegar al cliente.","El fallo se detecta siempre.","El control está a prueba de errores.","El fallo no tiene efecto."],e:"En los tres índices más alto es peor. D = 1: el error no puede pasar."},
+{id:"8b17",c:"8b",q:"Una gravedad G = 9–10 corresponde a un efecto que:",o:["Afecta a la seguridad o incumple la legislación.","Supone la pérdida de una función secundaria.","Es un defecto menor que el cliente nota.","No tiene efecto apreciable."],e:"G = 10: sin aviso previo. 7–8: pérdida de la función principal."},
+{id:"8b18",c:"8b",q:"Un control automático al 100 % corresponde a una detección:",o:["Alta (D = 2–3).","Casi imposible (D = 9–10).","Moderada (D = 4–6).","Baja (D = 7–8)."],e:"Inspección visual ocasional: D 7–8. Manual al 100 % o muestreo: D 4–6."},
+{id:"8b19",c:"8b",q:"Un modo tiene G = 7, O = 5 y D = 4. Su NPR es:",o:["140","16","35","28"],e:"NPR = G·O·D = 7·5·4 = 140. 16 = suma."},
+{id:"8b20",c:"8b",q:"El NPR puede tomar valores entre:",o:["1 y 1.000","0 y 100","1 y 30","1 y 10"],e:"Tres índices de 1 a 10 multiplicados."},
+{id:"8b21",c:"8b",q:"Al priorizar en el AMFE, lo PRIMERO es:",o:["Tratar todo modo con G ≥ 9, sea cual sea su NPR.","Ordenar por NPR y tratar los mayores.","Tratar los de mayor ocurrencia.","Tratar los de peor detección."],e:"1.º gravedad; 2.º NPR sobre el umbral o el 20 % más alto; 3.º a igualdad, gravedad y luego ocurrencia."},
+{id:"8b22",c:"8b",q:"Criterio: actuar si G ≥ 9 o NPR ≥ 100. Modos: X (G10·O2·D3), Y (G5·O5·D5), Z (G4·O4·D5). ¿Cuáles se tratan?",o:["X e Y.","Solo Y.","Solo X.","X, Y y Z."],e:"X: NPR 60 pero G = 10 → sí. Y: 125 ≥ 100 → sí. Z: 80 y G 4 → no."},
+{id:"8b23",c:"8b",q:"En el cálculo guiado, «etiqueta de circuito que no corresponde al esquema» (9·2·4 = 72) se trata el primero junto con el de NPR 336 porque:",o:["G = 9: un mantenedor podría intervenir en un circuito que cree sin tensión.","Su NPR es el más alto.","Su ocurrencia es la mayor.","Lo exige la norma IEC 60812."],e:"Es el modo que «engaña» al NPR."},
+{id:"8b24",c:"8b",q:"Dos modos tienen el mismo NPR = 120: uno con G = 8 y otro con G = 6. Se prioriza:",o:["El de G = 8: a igualdad manda la gravedad.","El de G = 6, porque su ocurrencia o detección son mayores.","Ambos por igual, sin criterio.","El que se detectó antes."],e:"A igualdad, manda la gravedad; después, la ocurrencia."},
+{id:"8b25",c:"8b",q:"El umbral de NPR a partir del cual se actúa:",o:["Lo decide la empresa y se escribe antes de puntuar.","Lo fija la norma IEC 60812 en 100.","Lo fija el cliente tras ver los resultados.","Es siempre 125."],e:"Ninguna norma lo fija. Escribirlo después de ver los resultados permitiría maquillar."},
+{id:"8b26",c:"8b",q:"Un NPR bajo significa que:",o:["No necesariamente es seguro: un fallo catastrófico y raro puede tener un NPR pequeño.","El modo de fallo es seguro y se puede ignorar.","La gravedad es baja.","El control es a prueba de errores."],e:"NPR alto = mira esto primero; NPR bajo ≠ esto es seguro."},
+{id:"8b27",c:"8b",q:"La gravedad (G) de un modo de fallo solo puede bajarse:",o:["Cambiando el diseño para eliminar o limitar el efecto.","Inspeccionando más.","Formando a los operarios.","Controlando la causa."],e:"O baja eliminando/controlando la causa; D baja mejorando los controles."},
+{id:"8b28",c:"8b",q:"Sustituir los bornes de tornillo por bornes de resorte que no dependen del par de apriete baja principalmente:",o:["La ocurrencia (O).","La gravedad (G).","La detección (D).","Ninguno de los índices."],e:"Elimina la causa (apriete insuficiente)."},
+{id:"8b29",c:"8b",q:"Añadir termografía o un ensayo automático al 100 % al final de línea baja principalmente:",o:["La detección (D).","La ocurrencia (O).","La gravedad (G).","Los tres por igual."],e:"Mejora los controles."},
+{id:"8b30",c:"8b",q:"Usar envolventes y soportes de material autoextinguible para que un calentamiento no acabe en incendio baja:",o:["La gravedad (G).","La ocurrencia (O).","La detección (D).","El umbral de NPR."],e:"Cambia el diseño para limitar el efecto."},
+{id:"8b31",c:"8b",q:"Orden de preferencia de las acciones en el AMFE:",o:["Cambiar el diseño o eliminar la causa antes que inspeccionar más.","Inspeccionar más antes que cambiar el diseño.","Bajar primero la detección.","Bajar el umbral de NPR."],e:"Inspeccionar no hace el proceso más fiable, solo descubre antes sus fallos (punto 3 de Deming)."},
+{id:"8b32",c:"8b",q:"Antes: G8·O6·D7. Tras implantar destornillador dinamométrico y marca de apriete: G8·O2·D5. El nuevo NPR y el índice que no cambia son:",o:["80; la gravedad no cambia porque no se ha modificado el diseño.","80; la detección no cambia.","336; no cambia ninguno.","15; la ocurrencia no cambia."],e:"8·2·5 = 80. El NPR se recalcula con datos, no con deseos."},
+{id:"8b33",c:"8b",q:"G10·O2·D3 y G2·O6·D5 dan ambos NPR = 60. Esto ilustra que:",o:["Un mismo NPR puede esconder riesgos que no se parecen en nada.","Ambos modos tienen el mismo riesgo.","El NPR es una medida exacta del riesgo.","La gravedad no importa."],e:"Catastrófico y raro vs molestia frecuente. Además, las escalas son ordinales."},
+{id:"8b34",c:"8b",q:"Que las escalas del AMFE sean ordinales implica que:",o:["Un 8 no es «el doble de grave» que un 4: multiplicar posiciones no mide el riesgo.","Se pueden sumar y restar sin problema.","Se pueden sustituir por porcentajes.","Solo pueden tomar valores pares."],e:"Uno de los límites del NPR."},
+{id:"8b35",c:"8b",q:"¿Cuál de estas prácticas es un error al hacer un AMFE?",o:["Hacerlo al final, para entregarlo al cliente.","Formar un equipo multidisciplinar.","Puntuar con escalas escritas y acordadas.","Asignar a cada acción un responsable y un plazo."],e:"Otros errores: una sola persona, puntuar sin escala, acciones sin responsable, no reabrirlo tras una reclamación."},
+{id:"8b36",c:"8b",q:"El AMFE debe revisarse:",o:["Con cada cambio, cada reclamación y cada no conformidad: es un documento vivo.","Solo una vez, antes de la producción en serie.","Cada cinco años.","Solo si lo pide el cliente."],e:"Paso 6: implantar, recalcular y mantenerlo vivo."},
+{id:"8b37",c:"8b",q:"En la línea de latas, la esterilización se controla registrando la temperatura con la misma sonda cuya deriva es la causa del fallo. Por ello:",o:["El control no detecta su propia causa: la detección es poco fiable (D alto).","La detección es excelente porque el registro es automático.","La gravedad es baja.","La ocurrencia es nula."],e:"Un control que depende de la misma sonda que deriva no la detecta. G además es 9–10 (salud): se trata siempre."},
+{id:"8b38",c:"8b",q:"En la línea de latas, «doble cierre fuera de especificación» con efecto de pérdida de hermeticidad y riesgo para la salud tendría una gravedad:",o:["9–10, y se trata sea cual sea su NPR.","2–3, defecto menor.","4–6, función secundaria.","1, sin efecto."],e:"Afecta a la seguridad (salud) → G ≥ 9."},
+
+/* ---------- CAP 9 ---------- */
+{id:"9n1",c:"9",q:"Según la ISO 9000:2015 (3.7.7), un servicio es:",o:["Una salida de una organización con al menos una actividad necesariamente llevada a cabo entre la organización y el cliente.","Un producto intangible que se puede almacenar.","Cualquier actividad sin contacto con el cliente.","Un bien tangible con garantía asociada."],e:"Definición literal."},
+{id:"9n2",c:"9",q:"«La hora de técnico que no se usa hoy se pierde.» Característica del servicio:",o:["Caducidad.","Heterogeneidad.","Intangibilidad.","Inseparabilidad."],e:"No se puede almacenar → ajustar capacidad y demanda (guardias, citas, picos)."},
+{id:"9n3",c:"9",q:"Que en un servicio no haya inspección final y el fallo llegue directamente al cliente se debe a la:",o:["Inseparabilidad.","Caducidad.","Heterogeneidad.","Intangibilidad."],e:"Se produce y consume a la vez: la calidad se asegura antes, con formación y procedimiento."},
+{id:"9n4",c:"9",q:"Que el servicio varíe según quién lo presta, cuándo y para quién es la:",o:["Heterogeneidad.","Inseparabilidad.","Caducidad.","Intangibilidad."],e:"Consecuencia: estandarizar lo esencial sin perder la atención a cada cliente."},
+{id:"9n5",c:"9",q:"Que el cliente juzgue por indicios (aspecto del técnico, informe, explicaciones) se debe a la:",o:["Intangibilidad.","Caducidad.","Heterogeneidad.","Inseparabilidad."],e:"No se puede ver, tocar ni probar antes de contratarlo."},
+{id:"9n6",c:"9",q:"La calidad funcional de un servicio:",o:["Es cómo recibe el cliente el servicio (puntualidad, trato, explicaciones) y solo se mide preguntándole.","Es el resultado técnico y se mide con indicadores internos.","Es la imagen de la empresa.","Es lo que promete la publicidad."],e:"Técnica = qué recibe (medible internamente); funcional = cómo lo recibe."},
+{id:"9n7",c:"9",q:"La expresión «momentos de la verdad» la popularizó:",o:["Jan Carlzon, presidente de la aerolínea SAS.","Christian Grönroos.","W. Edwards Deming.","A. Parasuraman."],e:"Presidente de SAS desde 1981; libro Moments of Truth (1987)."},
+{id:"9n8",c:"9",q:"Según Grönroos (1984), la imagen:",o:["Filtra la calidad técnica y la funcional: una buena reputación hace perdonar un fallo, una mala lo magnifica.","Es una dimensión de SERVQUAL.","Sustituye a la calidad técnica.","Solo afecta a los productos."],e:"La imagen actúa como filtro."},
+{id:"9n9",c:"9",q:"La calidad percibida de un servicio es:",o:["Lo que el cliente percibe frente a lo que esperaba.","Lo que la empresa cree que presta.","El cumplimiento de los indicadores internos.","La calidad técnica del resultado."],e:"Un trabajo técnicamente impecable puede percibirse como un mal servicio."},
+{id:"9n10",c:"9",q:"El modelo de las cinco brechas es de:",o:["Parasuraman, Zeithaml y Berry.","Hauser y Clausing.","Cronin y Taylor.","Kano y Akao."],e:"Los mismos autores de SERVQUAL."},
+{id:"9n11",c:"9",q:"La web anuncia «técnico en 2 horas» y la media real es de 4 horas. Es la brecha:",o:["4 · Comunicación.","3 · Prestación.","1 · Conocimiento.","2 · Especificación."],e:"Entre el servicio prestado y lo que se promete. Se cierra coordinando comercial y operaciones."},
+{id:"9n12",c:"9",q:"El procedimiento exige dejar un parte firmado, pero la mitad de los técnicos no lo deja. Es la brecha:",o:["3 · Prestación.","2 · Especificación.","4 · Comunicación.","5 · Calidad percibida."],e:"Hay estándar pero no se cumple. Se cierra con procesos, indicadores, formación, AMFE de proceso, 5S."},
+{id:"9n13",c:"9",q:"La empresa sabe que el cliente quiere aviso previo, pero no ha fijado ningún estándar de aviso. Es la brecha:",o:["2 · Especificación.","1 · Conocimiento.","3 · Prestación.","4 · Comunicación."],e:"Se sabe, pero no se ha convertido en estándar. Se cierra con la casa de la calidad (qués → cómos con valor objetivo)."},
+{id:"9n14",c:"9",q:"La empresa cree que el cliente solo mira el precio, pero el cliente valora que le avisen antes de llegar. Es la brecha:",o:["1 · Conocimiento.","2 · Especificación.","4 · Comunicación.","5 · Calidad percibida."],e:"Se cierra escuchando la voz del cliente (cap. 7 y QFD)."},
+{id:"9n15",c:"9",q:"SERVQUAL mide:",o:["La brecha 5: lo que el cliente esperaba frente a lo que percibe.","La brecha 1: lo que la dirección cree que espera el cliente.","Las cuatro brechas internas.","La brecha 3: el cumplimiento de los estándares."],e:"Las brechas 1–4 están dentro de la organización y explican por qué aparece la 5."},
+{id:"9n16",c:"9",q:"Ante una queja de un cliente, el trabajo de calidad consiste en:",o:["Averiguar cuál de las cuatro brechas internas produce la brecha 5.","Medir de nuevo la brecha 5.","Cambiar la publicidad.","Aumentar las inspecciones finales."],e:"Una queja es siempre brecha 5."},
+{id:"9n17",c:"9",q:"En el modelo de las brechas, «lo que se promete eleva lo que se espera» significa que:",o:["La comunicación externa influye en el servicio esperado por el cliente.","Prometer más mejora siempre la calidad percibida.","La brecha 4 no afecta al cliente.","Las expectativas no dependen de la empresa."],e:"Prometer más de lo que se da abre la brecha 4 y agranda la 5."},
+{id:"9n18",c:"9",q:"¿Cuáles son las cinco dimensiones de SERVQUAL?",o:["Elementos tangibles, fiabilidad, capacidad de respuesta, seguridad y empatía.","Intangibilidad, inseparabilidad, heterogeneidad, caducidad e imagen.","Conocer, especificar, prestar, prometer y percibir.","Calidad técnica, funcional, imagen, precio y plazo."],e:"Las cuatro características del servicio y las cinco brechas son otras listas."},
+{id:"9n19",c:"9",q:"En SERVQUAL, la dimensión «seguridad» se refiere a:",o:["El conocimiento y la cortesía del personal y su capacidad para inspirar confianza.","La seguridad eléctrica de la instalación.","La protección de datos del cliente.","La seguridad laboral de los técnicos."],e:"Confundirla con la seguridad eléctrica es un error frecuente; la eléctrica es un requisito obligatorio."},
+{id:"9n20",c:"9",q:"La capacidad de prestar el servicio prometido de forma fiable y precisa es la dimensión:",o:["Fiabilidad.","Capacidad de respuesta.","Seguridad.","Empatía."],e:"En los estudios originales fue siempre la más importante."},
+{id:"9n21",c:"9",q:"«Ofrecen horarios que se adaptan al cliente» es un ítem de la dimensión:",o:["Empatía.","Capacidad de respuesta.","Fiabilidad.","Elementos tangibles."],e:"Empatía: atención cuidadosa e individualizada."},
+{id:"9n22",c:"9",q:"«Atienden con rapidez los avisos de avería» es un ítem de la dimensión:",o:["Capacidad de respuesta.","Fiabilidad.","Empatía.","Seguridad."],e:"Disposición a ayudar y dar un servicio rápido."},
+{id:"9n23",c:"9",q:"En los estudios originales de SERVQUAL, la dimensión más importante fue siempre:",o:["La fiabilidad.","La empatía.","Los elementos tangibles.","La seguridad."],e:"Cumplir lo prometido."},
+{id:"9n24",c:"9",q:"El cuestionario SERVQUAL completo tiene:",o:["22 afirmaciones de expectativas y las mismas 22 de percepciones, en escala de 1 a 7.","10 afirmaciones en escala de 1 a 5.","22 afirmaciones en escala de 1 a 10.","5 afirmaciones, una por dimensión."],e:"Ítems por dimensión: 4 tangibles, 5 fiabilidad, 4 respuesta, 4 seguridad, 5 empatía."},
+{id:"9n25",c:"9",q:"¿Cuántos ítems tienen la fiabilidad y la empatía en el SERVQUAL original?",o:["5 cada una.","4 cada una.","5 la fiabilidad y 4 la empatía.","6 cada una."],e:"Tangibles 4, fiabilidad 5, capacidad de respuesta 4, seguridad 4, empatía 5 = 22."},
+{id:"9n26",c:"9",q:"La brecha de un ítem en SERVQUAL se calcula como:",o:["Q = P − E, con valores entre −6 y +6.","Q = E − P, con valores entre 1 y 7.","Q = P / E.","Q = P · E."],e:"Q < 0: por debajo de lo esperado; Q = 0: cumple; Q > 0: supera."},
+{id:"9n27",c:"9",q:"En la versión revisada de SERVQUAL (1991), la importancia de las dimensiones se obtiene:",o:["Haciendo que el cliente reparta 100 puntos entre las cinco dimensiones.","Puntuando cada dimensión de 1 a 5.","Por decisión de la dirección.","Con la matriz 9-3-1."],e:"Ponderada = Σ (puntos/100) · brecha de cada dimensión."},
+{id:"9n28",c:"9",q:"Un ítem tiene E = 6,6 y P = 5,0. Su brecha es:",o:["−1,6","+1,6","0,76","−0,6"],e:"P − E = 5,0 − 6,6 = −1,6 (ítem 3, instalar en la fecha comprometida)."},
+{id:"9n29",c:"9",q:"Brechas por dimensión: tangibles −0,4 (10 pts), fiabilidad −1,0 (30), respuesta −0,6 (25), seguridad +0,2 (20), empatía −0,5 (15). La puntuación ponderada es:",o:["−0,53","−0,46","−2,30","−0,30"],e:"−0,04 − 0,30 − 0,15 + 0,04 − 0,075 = −0,525 ≈ −0,53. −0,46 es la media sin ponderar; −2,30 la suma sin ponderar."},
+{id:"9n30",c:"9",q:"En el caso 8, la puntuación ponderada (−0,74) es peor que la sin ponderar (−0,56). Significa que:",o:["Las brechas grandes están en las dimensiones que el cliente más valora.","Hay un error de cálculo.","Las brechas positivas pesan más.","La empatía es la dimensión más importante."],e:"Fiabilidad (35 pts) y capacidad de respuesta (25) acumulan las mayores brechas."},
+{id:"9n31",c:"9",q:"En el caso 8, ¿qué dimensión conviene mejorar primero y por qué?",o:["Fiabilidad: su brecha es casi igual que la de capacidad de respuesta, pero pesa más y es la que más resta.","Capacidad de respuesta, porque tiene la mayor brecha.","Empatía, porque tiene una brecha positiva en un ítem.","Seguridad, porque su brecha es cero."],e:"−1,1 × 0,35 = −0,385 frente a −1,2 × 0,25 = −0,300. En la práctica se atacan juntas."},
+{id:"9n32",c:"9",q:"En el caso 8, los ítems 3 (instalar en la fecha) y 6 (informar de cuándo) comparten como causa probable:",o:["La planificación de la agenda: un problema del proceso, no de los técnicos.","La falta de cortesía de los técnicos.","El mal estado de los equipos.","Que la seguridad eléctrica no se cumple."],e:"Enlace con el capítulo 7: buscar la causa en el proceso."},
+{id:"9n33",c:"9",q:"El ítem «el punto funciona bien desde el primer día» tiene P = 6,2 y E = 6,8. ¿Cómo se interpreta?",o:["La calidad técnica es buena, pero la brecha es negativa porque se espera casi un 7: es un requisito obligatorio.","Es la mayor brecha del cuestionario.","Supera lo esperado.","Es un ítem de empatía."],e:"Una percepción alta no basta: un 6 sobre 7 es mala noticia si el cliente esperaba un 7."},
+{id:"9n34",c:"9",q:"SERVPERF (Cronin y Taylor, 1992):",o:["Mide solo percepciones: más corto, pero pierde la lectura de la brecha.","Mide solo expectativas.","Añade una sexta dimensión a SERVQUAL.","Es la versión revisada de 1991."],e:"Es una de las críticas/alternativas a SERVQUAL."},
+{id:"9n35",c:"9",q:"¿Cuál es una crítica a SERVQUAL recogida en el temario?",o:["Las cinco dimensiones no se reproducen igual en todos los sectores: hay que adaptar los ítems (Buttle, 1996).","No permite calcular brechas.","Solo sirve para productos.","No usa escalas numéricas."],e:"Otras: expectativas ambiguas, cuestionario largo y repetitivo."},
+{id:"9n36",c:"9",q:"¿Cuál es un error frecuente al aplicar SERVQUAL?",o:["Mirar solo las percepciones: una P alta puede esconder una brecha.","Calcular la brecha como P − E.","Ponderar las dimensiones con 100 puntos.","Leer los ítems individualmente."],e:"Otros: confundir seguridad, quedarse con la media global, preguntar solo a quienes contestan siempre."},
+{id:"9n37",c:"9",q:"SERVQUAL y los indicadores internos (plazo, averías resueltas a la primera):",o:["Se complementan: SERVQUAL aporta la mirada del cliente.","SERVQUAL los sustituye.","Los indicadores internos hacen innecesario SERVQUAL.","Miden exactamente lo mismo."],e:"No los sustituye: los completa."},
+{id:"9n38",c:"9",q:"El suministro de electricidad a una vivienda es:",o:["Una mezcla: la tensión como producto (se mide según UNE-EN 50160) y la continuidad y la atención como servicio.","Un producto puro.","Un servicio puro.","Ni producto ni servicio."],e:"Casi todo es una mezcla; cambia el peso de cada parte."},
+
+/* ---------- CAP 10 ---------- */
+{id:"10p1",c:"10",p:1,q:"¿Qué documento definió en 1987 el desarrollo sostenible como el que satisface las necesidades del presente sin comprometer las de las generaciones futuras?",o:["El Informe Brundtland.","La Declaración del Milenio.","La Agenda 21.","El Acuerdo de París."],e:"«Nuestro futuro común», 1987. Agenda 21: 1992; Declaración del Milenio: 2000; Acuerdo de París: 2015."},
+{id:"10p2",c:"10",p:1,q:"¿Cuál es la diferencia principal entre los ODM y los ODS?",o:["Los ODS son de aplicación universal; los ODM se dirigían sobre todo a los países en desarrollo.","Los ODM tenían más objetivos que los ODS.","Los ODS son jurídicamente vinculantes y los ODM no.","Los ODM incluían metas para las empresas y los ODS no."],e:"La universalidad. ODM 8 objetivos frente a 17 ODS; ninguno de los dos es jurídicamente vinculante."},
+{id:"10p3",c:"10",p:1,q:"¿En qué conferencia se decidió elaborar los ODS?",o:["Río+20, 2012.","Estocolmo, 1972.","Río de Janeiro, 1992.","Johannesburgo, 2002."],e:"Documento «El futuro que queremos». Estocolmo y Río 1992 son antecedentes; Johannesburgo reafirmó Río."},
+{id:"10p4",c:"10",p:1,q:"La Agenda 2030 se estructura en:",o:["17 objetivos y 169 metas.","8 objetivos y 21 metas.","17 objetivos y 234 metas.","169 objetivos y 17 metas."],e:"8 y 21 eran los ODM; 234 es el número de indicadores, no de metas."},
+{id:"10p5",c:"10",p:1,q:"Que la Agenda 2030 sea «integrada e indivisible» significa que:",o:["Los objetivos se influyen: avanzar en uno puede ayudar o perjudicar a otros.","Cada país debe elegir un único objetivo.","Solo puede aplicarla la Unión Europea en conjunto.","Ninguna meta puede modificarse hasta 2030."],e:"Sinergias y compensaciones."},
+{id:"10p6",c:"10",p:1,q:"¿Qué órgano revisa cada año los avances de la Agenda 2030 a escala mundial?",o:["El Foro Político de Alto Nivel.","El Consejo de Seguridad de la ONU.","La Comisión Europea.","La Organización Internacional de Normalización."],e:"Bajo los auspicios de la Asamblea General y del ECOSOC; recibe los exámenes nacionales voluntarios."},
+{id:"10p7",c:"10",p:1,q:"Un indicador como «energía primaria por unidad de PIB» mide:",o:["La eficiencia con que una economía usa la energía para generar valor.","La proporción de energía renovable consumida.","Las emisiones totales de dióxido de carbono.","El acceso de la población a la electricidad."],e:"Indicador 7.3.1, intensidad energética."},
+{id:"10p8",c:"10",p:1,q:"Una empresa industrial que quiere contribuir a los ODS:",o:["Debe priorizar los objetivos en los que más influye, fijar metas medibles y revisarlas.","Está obligada por la Agenda 2030 a informar de los 17 objetivos.","Cumple con publicar los iconos de los ODS en su web.","Solo puede hacerlo si es una gran empresa."],e:"La Agenda no obliga a informar de los 17; los iconos sin metas no demuestran nada."},
+{id:"10n1",c:"10",q:"Las tres dimensiones del desarrollo sostenible son:",o:["Económica, social y ambiental.","Ambiental, energética y climática.","Política, económica y tecnológica.","Personas, planeta y prosperidad."],e:"Sostenible no es sinónimo de ecológico. Personas, planeta, prosperidad… son parte de las 5 P."},
+{id:"10n2",c:"10",q:"¿Son los ODS una ley que obliga a las empresas?",o:["No: son una resolución de la Asamblea General de la ONU, un compromiso político; obliga la normativa que los desarrolla.","Sí: obligan a todas las empresas desde 2016.","Sí, pero solo a las grandes empresas.","Solo obligan en la Unión Europea."],e:"Se aplican mediante estrategias, normas y decisiones de cada país."},
+{id:"10n3",c:"10",q:"¿Cuántos Estados aprobaron la Agenda 2030 y cuándo?",o:["193 Estados, el 25 de septiembre de 2015.","178 Estados, en 1992.","193 Estados, el 1 de enero de 2016.","189 Estados, en el año 2000."],e:"Entró en vigor el 1 de enero de 2016. 178 es la cifra de la Cumbre de la Tierra (1992)."},
+{id:"10n4",c:"10",q:"En la Conferencia de Estocolmo (1972) nace:",o:["El Programa de las Naciones Unidas para el Medio Ambiente (PNUMA).","La Agenda 21.","El Pacto Mundial.","El concepto de desarrollo sostenible."],e:"Primera cumbre ambiental. El concepto de desarrollo sostenible es de 1987 (Brundtland)."},
+{id:"10n5",c:"10",q:"En la Cumbre de la Tierra de Río de Janeiro (1992), más de 178 países adoptaron:",o:["La Agenda 21.","Los ODM.","La Agenda 2030.","El documento «El futuro que queremos»."],e:"Un plan de acción para el desarrollo sostenible."},
+{id:"10n6",c:"10",q:"Los Objetivos de Desarrollo del Milenio (ODM) surgen de:",o:["La Declaración del Milenio (Nueva York, 2000): ocho objetivos para reducir la pobreza extrema antes de 2015.","Río+20 (2012).","El Informe Brundtland (1987).","La Cumbre de Johannesburgo (2002)."],e:"8 objetivos y 21 metas."},
+{id:"10n7",c:"10",q:"¿Qué países propusieron en 2011 fijar objetivos de desarrollo sostenible de cara a Río+20?",o:["Colombia y Guatemala.","Brasil y México.","España y Portugal.","Suecia y Noruega."],e:"Después: mandato de Río+20 (2012), Grupo de Trabajo Abierto (2013-2014) y aprobación (2015)."},
+{id:"10n8",c:"10",q:"El Grupo de Trabajo Abierto que propuso los 17 objetivos y 169 metas (julio de 2014) tenía:",o:["30 puestos, compartidos por varios países.","193 miembros, uno por Estado.","17 miembros, uno por objetivo.","8 miembros, uno por ODM."],e:"Después hubo ocho rondas de negociación entre enero y agosto de 2015."},
+{id:"10n9",c:"10",q:"La Agenda 2030 entró en vigor el:",o:["1 de enero de 2016.","25 de septiembre de 2015.","1 de enero de 2015.","1 de enero de 2030."],e:"Se aprobó en septiembre de 2015 y rige de 2016 a 2030."},
+{id:"10n10",c:"10",q:"Según el temario, la pobreza extrema pasó de 1.900 millones de personas (1990) a:",o:["836 millones (2015).","1.000 millones (2015).","500 millones (2015).","100 millones (2015)."],e:"Los ODM funcionaron en parte, pero unos 800 millones seguían en pobreza extrema."},
+{id:"10n11",c:"10",q:"¿Cuál de estos NO es uno de los tres motivos para una nueva agenda tras los ODM?",o:["Los ODM eran jurídicamente vinculantes y generaban conflictos.","Una tarea a medias: seguía habiendo pobreza extrema.","Un planeta al límite: emisiones +50 % desde 1990.","Problemas conectados que no entienden de fronteras."],e:"Ninguno de los dos marcos es vinculante."},
+{id:"10n12",c:"10",q:"Sobre el medio ambiente en ODM y ODS:",o:["En los ODM era un objetivo de ocho; en los ODS está presente en muchos objetivos.","En los ODM no aparecía.","En los ODS solo aparece en el objetivo 13.","Tenía el mismo peso en ambos marcos."],e:"Energía, clima, agua, consumo…"},
+{id:"10n13",c:"10",q:"El papel de las empresas en los ODS es:",o:["De agente explícito: la Agenda les pide su creatividad e innovación.","Secundario, como en los ODM.","Inexistente: solo afecta a los Estados.","Obligatorio: deben informar de los 17 objetivos."],e:"En los ODM era secundario."},
+{id:"10n14",c:"10",q:"El principio «sin dejar a nadie atrás» significa que:",o:["El avance medio no basta: hay que llegar también a los grupos más vulnerables.","Todos los países deben avanzar al mismo ritmo.","Ningún objetivo puede quedar sin cumplir.","Las empresas no pueden despedir personal."],e:"Uno de los cinco principios de la Agenda 2030."},
+{id:"10n15",c:"10",q:"Las «5 P» del preámbulo de la Agenda 2030 son:",o:["Personas, planeta, prosperidad, paz y alianzas.","Pobreza, planeta, progreso, política y paz.","Producción, procesos, personas, planeta y producto.","Planificar, prevenir, proteger, prosperar y participar."],e:"Alianzas = Partnership en inglés."},
+{id:"10n16",c:"10",q:"Las cifras actuales de la arquitectura de la Agenda 2030 (octubre de 2026) son:",o:["17 objetivos, 169 metas y 234 indicadores.","17 objetivos, 234 metas y 169 indicadores.","8 objetivos, 21 metas y 60 indicadores.","17 objetivos, 169 metas y 17 indicadores."],e:"El marco de indicadores se revisa periódicamente (última revisión amplia, 2025)."},
+{id:"10n17",c:"10",q:"La meta 7.3 de la Agenda 2030 es:",o:["De aquí a 2030, duplicar la tasa mundial de mejora de la eficiencia energética.","Garantizar el acceso universal a la electricidad.","Duplicar la proporción de energía renovable.","Reducir a la mitad las emisiones de CO2."],e:"Se mide con el indicador 7.3.1: intensidad energética (energía primaria / PIB)."},
+{id:"10n18",c:"10",q:"En España, el indicador 7.3.1 lo publica el INE en:",o:["Toneladas equivalentes de petróleo (tep) por millón de euros.","kWh por habitante.","Toneladas de CO2 por millón de euros.","Porcentaje de energía renovable."],e:"El INE publica los indicadores de la Agenda 2030 para España."},
+{id:"10n19",c:"10",q:"El ODS 12 es:",o:["Producción y consumo responsables.","Acción por el clima.","Industria, innovación e infraestructura.","Ciudades y comunidades sostenibles."],e:"9 Industria, 11 Ciudades, 13 Clima."},
+{id:"10n20",c:"10",q:"El ODS 8 es:",o:["Trabajo decente y crecimiento económico.","Energía asequible y no contaminante.","Reducción de las desigualdades.","Industria, innovación e infraestructura."],e:"7 Energía, 9 Industria, 10 Desigualdades."},
+{id:"10n21",c:"10",q:"El ODS 7 es:",o:["Energía asequible y no contaminante.","Agua limpia y saneamiento.","Acción por el clima.","Producción y consumo responsables."],e:"6 Agua, 12 Producción y consumo, 13 Clima."},
+{id:"10n22",c:"10",q:"¿Qué órgano de la ONU aprueba los indicadores de los ODS?",o:["La Comisión de Estadística.","El Foro Político de Alto Nivel.","La Asamblea General, cada año.","El Consejo de Seguridad."],e:"El FPAN revisa los avances; la Asamblea General aprobó la Agenda."},
+{id:"10n23",c:"10",q:"La Estrategia de Desarrollo Sostenible 2030 del Gobierno de España es de:",o:["2021","2015","2018","2024"],e:"Plan de Acción: 2018. Exámenes nacionales voluntarios: 2018, 2021 y 2024."},
+{id:"10n24",c:"10",q:"El Pacto Mundial de la ONU (2000) propone a las empresas:",o:["Diez principios sobre derechos humanos, trabajo, medio ambiente y lucha contra la corrupción.","Diecisiete objetivos obligatorios.","Ocho objetivos contra la pobreza.","Una certificación ambiental."],e:"Las empresas pueden adherirse y fijar metas propias."},
+{id:"10n25",c:"10",q:"«Publica informes independientes sobre los objetivos en los que un país no avanza.» ¿Qué agente lo hace?",o:["Una organización no gubernamental.","El Instituto Nacional de Estadística.","El Gobierno de España.","La Asamblea General de la ONU."],e:"R3: aprobar (Asamblea), revisar (FPAN), planificar (Gobierno), medir (INE), decidir (empresa), vigilar (ONG)."},
+{id:"10n26",c:"10",q:"«Publica los valores de los indicadores de la Agenda 2030 para España.» ¿Qué agente lo hace?",o:["El Instituto Nacional de Estadística.","El Foro Político de Alto Nivel.","Una ONG.","El Pacto Mundial."],e:"Función: medir."},
+{id:"10n27",c:"10",q:"Según el Reglamento (UE) 2024/573, desde el 1 de enero de 2026 no puede ponerse en funcionamiento nueva aparamenta que use gases fluorados de:",o:["Media tensión, hasta 24 kV.","Alta tensión, de más de 145 kV.","Media tensión, de 24 a 52 kV.","Baja tensión."],e:"AT 52–145 kV y ≤ 50 kA: 2028; MT 24–52 kV: 2030; AT > 145 kV o > 50 kA: 2032."},
+{id:"10n28",c:"10",q:"El SF6 se restringe porque:",o:["Su potencial de calentamiento atmosférico supera en más de 23.000 veces al del CO2.","Es mal aislante eléctrico.","Es tóxico al contacto.","Es inflamable."],e:"Es un aislante excelente; el problema es el clima (ODS 13). Para la ISO 9001 es un requisito legal aplicable."},
+{id:"10n29",c:"10",q:"Desde la modificación de 2024, la ISO 9001 pide:",o:["Determinar si el cambio climático es una cuestión pertinente para la organización.","Informar de los 17 ODS.","Certificar la gestión ambiental.","Calcular la huella de carbono de cada producto."],e:"Apartado 4.1; nota en 4.2 sobre requisitos de las partes interesadas."},
+{id:"10n30",c:"10",q:"¿Cuál de estas normas es una guía y NO es certificable?",o:["ISO 26000 (responsabilidad social).","ISO 14001 (gestión ambiental).","ISO 50001 (gestión de la energía).","ISO 9001 (gestión de la calidad)."],e:"ISO 14001 y 50001 son certificables."},
+{id:"10n31",c:"10",q:"Los cinco pasos del SDG Compass (2015) son:",o:["Entender los ODS, definir prioridades, establecer metas, integrar en la gestión e informar y comunicar.","Planificar, hacer, verificar, actuar y comunicar.","Recoger, traducir, agrupar, ponderar y completar.","Conocer, especificar, prestar, prometer y percibir."],e:"Son un ciclo PDCA aplicado a la sostenibilidad. «Recoger…» es la voz del cliente; «conocer…» las brechas."},
+{id:"10n32",c:"10",q:"Una fábrica consume 3.000 MWh con un valor añadido de 20 M€; al año siguiente, 3.060 MWh con 21,6 M€. La mejora anual de la intensidad energética es:",o:["5,56 %","2,0 %","8,0 %","5,88 %"],e:"150,0 → 141,67 MWh/M€. (150 − 141,67)/150 = 5,56 %. 5,88 % divide entre el año nuevo; 2 % es la variación de energía."},
+{id:"10n33",c:"10",q:"En la R2, la intensidad energética baja un 11,6 % pero el consumo total sube un 2,5 %. Esto es:",o:["Desacoplamiento relativo, pero no absoluto.","Desacoplamiento absoluto.","Ningún tipo de mejora.","Un error de medición."],e:"Al clima le importan las emisiones totales: una buena batería de indicadores mira el relativo y el absoluto."},
+{id:"10n34",c:"10",q:"Meta: duplicar la mejora del 3 % anual (6 %). Resultados: 6,25 % en 2024 y 5,75 % en 2025. Conclusión:",o:["Se cumple en 2024 y no en 2025; la media (6,0 %) esconde el incumplimiento.","Se cumple en ambos años porque la media es 6,0 %.","No se cumple ningún año.","Se cumple en 2025 y no en 2024."],e:"Analizar cada periodo, no solo la media."},
+{id:"10n35",c:"10",q:"Automatizar el cableado (−20 % energía, −60 % defectos, −10 puestos) puede perjudicar sobre todo al ODS:",o:["8 · Trabajo decente y crecimiento económico.","7 · Energía asequible y no contaminante.","12 · Producción y consumo responsables.","9 · Industria, innovación e infraestructura."],e:"Ayuda a 7, 9, 12 y 13; puede perjudicar a 8 y a 10 (si los afectados son vulnerables). Condición: recolocación y formación."},
+{id:"10n36",c:"10",q:"Según el debate R4, los ODS sirven a una empresa industrial si:",o:["Se gestionan como cualquier objetivo de calidad: prioridades, metas medibles, responsables y revisión con datos.","Se publican sus iconos en la memoria anual.","Se eligen los que la empresa ya cumple.","Se delegan en el departamento de marketing."],e:"Sin metas ni indicadores es lavado de imagen."}
+];
+
+const CHAP = {"7":"Cap. 7 · Procesos y liderazgo","8a":"Cap. 8 · QFD","8b":"Cap. 8 · AMFE","9":"Cap. 9 · Servicios","10":"Cap. 10 · ODS"};
+const ORDER = ["7","8a","8b","9","10"];
+const LS_KEY = "cuaderno-calidad-7-10";
+let store = {};
+try { store = JSON.parse(localStorage.getItem(LS_KEY) || "{}") || {}; } catch(e){ store = {}; }
+function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(store)); }catch(e){} }
+function rec(id, ok){
+  const s = store[id] || {r:0,w:0,last:null};
+  ok ? s.r++ : s.w++; s.last = ok ? 1 : 0;
+  store[id] = s; save();
+}
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+
+/* navegación */
+function show(v){
+  document.querySelectorAll("section.view").forEach(s=>s.classList.toggle("on", s.id==="v-"+v));
+  document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on", b.dataset.v===v));
+  if(v==="inicio") renderHome();
+  window.scrollTo({top:0});
+  try{ sessionStorage.setItem(LS_KEY+"-tab", v); }catch(e){}
+}
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if(b) show(b.dataset.v); });
+
+/* tema */
+$("#themeBtn").addEventListener("click", () => {
+  const r = document.documentElement;
+  const dark = r.dataset.theme ? r.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark";
+  try{ localStorage.setItem(LS_KEY+"-theme", r.dataset.theme); }catch(e){}
+});
+try{ const t = localStorage.getItem(LS_KEY+"-theme"); if(t) document.documentElement.dataset.theme = t; }catch(e){}
+
+/* estadísticas de inicio */
+function renderHome(){
+  let html = "<b>Tu progreso</b><div class='stat-grid' style='margin-top:8px'>";
+  for(const c of ORDER){
+    const qs = Q.filter(q=>q.c===c);
+    const seen = qs.filter(q=>store[q.id]).length;
+    const ok = qs.filter(q=>store[q.id] && store[q.id].last===1).length;
+    const pct = qs.length ? Math.round(ok/qs.length*100) : 0;
+    html += `<div><div class="small">${CHAP[c]}</div><div class="bar"><i style="width:${pct}%"></i></div><div class="small muted">${ok}/${qs.length} dominadas · ${seen} vistas</div></div>`;
+  }
+  html += `</div><p class="small muted" style="margin-bottom:0">${Q.length} preguntas en total · ${Q.filter(q=>q.p).length} del profesor. «Dominada» = acertada la última vez.</p>`;
+  $("#homeStats").innerHTML = html;
+}
+
+/* configuración del test */
+const selChaps = new Set(ORDER);
+$("#chapChips").innerHTML = ORDER.map(c=>`<button class="on" data-c="${c}">${CHAP[c]}</button>`).join("");
+$("#chapChips").addEventListener("click", e => {
+  const b = e.target.closest("button"); if(!b) return;
+  const c = b.dataset.c;
+  selChaps.has(c) ? selChaps.delete(c) : selChaps.add(c);
+  b.classList.toggle("on", selChaps.has(c));
+  updatePool();
+});
+function pool(){
+  return Q.filter(q => selChaps.has(q.c)
+    && (!$("#onlyProf").checked || q.p)
+    && (!$("#onlyFailed").checked || (store[q.id] && store[q.id].last===0)));
+}
+function updatePool(){ $("#poolInfo").textContent = pool().length + " preguntas disponibles"; }
+["#onlyProf","#onlyFailed"].forEach(s=>$(s).addEventListener("change", updatePool));
+$("#resetBtn").addEventListener("click", () => { if(confirm("¿Borrar todo el progreso guardado?")){ store = {}; save(); updatePool(); renderHome(); } });
+
+let run = null;
+$("#startBtn").addEventListener("click", start);
+function start(){
+  let p = shuffle(pool());
+  if(!p.length){ $("#quiz").innerHTML = "<div class='card'>No hay preguntas con ese filtro.</div>"; return; }
+  const n = +$("#nq").value; if(n) p = p.slice(0, n);
+  const mode = document.querySelector("input[name=mode]:checked").value;
+  run = { mode, penal: $("#penal").checked, done:false,
+    items: p.map(q => { const order = shuffle([0,1,2,3]); return { q, order, sel:null }; }) };
+  renderQuiz();
+  $("#quiz").scrollIntoView({behavior:"smooth"});
+}
+function renderQuiz(){
+  const L = "abcd";
+  $("#quiz").innerHTML = run.items.map((it,i) => {
+    const q = it.q;
+    const answered = it.sel !== null;
+    const reveal = run.mode==="practica" ? answered : run.done;
+    const opts = it.order.map((oi,k) => {
+      let cls = "opt";
+      if(reveal){ if(oi===0) cls += " ok"; else if(it.sel===oi) cls += " ko"; }
+      else if(it.sel===oi) cls += " sel";
+      const dis = (run.mode==="practica" && answered) || run.done ? "disabled" : "";
+      return `<button class="${cls}" data-i="${i}" data-o="${oi}" ${dis}><span class="l">${L[k]})</span>${esc(q.o[oi])}</button>`;
+    }).join("");
+    let exp = "";
+    if(reveal){
+      const ok = it.sel===0;
+      const right = L[it.order.indexOf(0)];
+      exp = `<div class="exp"><b style="color:var(${it.sel===null?"--muted":ok?"--ok":"--ko"})">${it.sel===null?"Sin responder":ok?"Correcta":"Incorrecta"}</b> · respuesta: <b>${right})</b>. ${esc(q.e)}</div>`;
+    }
+    return `<div class="q" id="q${i}"><div class="qh"><span>${i+1}/${run.items.length} · ${CHAP[q.c]}</span>${q.p?'<span class="tag prof">Profesor</span>':""}</div><div class="qt">${esc(q.q)}</div>${opts}${exp}</div>`;
+  }).join("");
+  $("#quizEnd").classList.toggle("hidden", !(run.mode==="simulacro" && !run.done));
+  renderScore();
+}
+$("#quiz").addEventListener("click", e => {
+  const b = e.target.closest(".opt"); if(!b || b.disabled || !run) return;
+  const it = run.items[+b.dataset.i];
+  it.sel = +b.dataset.o;
+  if(run.mode==="practica") rec(it.q.id, it.sel===0);
+  const y = window.scrollY;
+  renderQuiz();
+  window.scrollTo({top:y});
+});
+$("#finishBtn").addEventListener("click", () => {
+  const blank = run.items.filter(it=>it.sel===null).length;
+  if(blank && !confirm(blank+" sin responder. ¿Corregir igualmente?")) return;
+  run.done = true;
+  run.items.forEach(it => { if(it.sel!==null) rec(it.q.id, it.sel===0); else rec(it.q.id, false); });
+  renderQuiz();
+  $("#scoreBar").scrollIntoView({behavior:"smooth"});
+});
+function renderScore(){
+  const bar = $("#scoreBar");
+  if(!run){ bar.classList.add("hidden"); return; }
+  bar.classList.remove("hidden");
+  const n = run.items.length;
+  const ans = run.items.filter(it=>it.sel!==null).length;
+  const show = run.mode==="practica" || run.done;
+  const ok = run.items.filter(it=>it.sel===0).length;
+  const ko = run.items.filter(it=>it.sel!==null && it.sel!==0).length;
+  let txt = `<span>Respondidas ${ans}/${n}</span>`;
+  if(show){
+    const raw = run.penal ? ok - ko/3 : ok;
+    const nota = Math.max(0, raw / n * 10);
+    txt += `<span>✓ ${ok} · ✗ ${ko}</span><span class="score">Nota: ${nota.toFixed(2)}/10${run.penal?" (−1/3)":""}</span>`;
+  }
+  txt += `<button class="small" id="againBtn">Nuevo test</button>`;
+  bar.innerHTML = txt;
+  $("#againBtn").onclick = () => { $("#testSetup").scrollIntoView({behavior:"smooth"}); updatePool(); };
+}
+
+updatePool();
+renderHome();
+try{ const t = sessionStorage.getItem(LS_KEY+"-tab"); if(t && document.getElementById("v-"+t)) show(t); }catch(e){}
+</script>
+</body>
+</html>
